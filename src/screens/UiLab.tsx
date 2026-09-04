@@ -3,7 +3,7 @@ import { BookOpen, BookmarkSimple, ChartBar, FileArrowUp, FolderSimple, GearSix,
 import "./UiLab.css";
 
 type Screen = "home" | "library" | "reader" | "quick" | "settings";
-type SettingsSection = "display" | "reading" | "controls" | "companion" | "device" | null;
+type SettingsSection = "display" | "reading" | "controls" | "system" | null;
 
 const BOOKS = [
   ["The Art of Reading", "M. Ito", "42%"], ["The Long Way Home", "S. Baker", "New"], ["Deep Work", "C. Newport", "18%"],
@@ -57,21 +57,33 @@ function Reader({ onQuick }: { onQuick: () => void }) { return <main className="
 function QuickSettings({ light, onLight, onBack }: { light: number; onLight: (value: number) => void; onBack: () => void }) { return <main className="eink-main eink-quick"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Quick settings</strong></div><section><h2>Front light</h2><div className="setting-options"><button className="active"><SunDim size={20} />Bright</button><button>Soft</button><button>Auto</button><button>Off</button></div><label>Brightness <output>{light}</output><input type="range" min="0" max="100" value={light} onChange={(event) => onLight(Number(event.target.value))} /></label></section><section><h2>Refresh</h2><div className="setting-options"><button className="active">Fast</button><button>Balanced</button><button>Clean</button></div></section><section><h2>Layout</h2><div className="setting-options"><button className="active">Comfort</button><button>Compact</button><button>Large text</button></div></section></main>; }
 
 const SETTINGS = [
-  ["display", "Display & light", "Frontlight, sleep, refresh", Lightbulb], ["reading", "Reading", "Font, layout, reader tools", BookOpen], ["controls", "Controls", "Home, side buttons, gestures", Sliders], ["companion", "Connection & Companion", "Wi-Fi, local sharing, sync", WifiHigh], ["device", "Device & storage", "Name, files, updates", GearSix],
+  ["display", "Display & Power", "Light, refresh, sleep", Lightbulb], ["reading", "Reading", "Type, layout, reading aids", BookOpen], ["controls", "Controls", "Buttons, touch, shortcuts", Sliders], ["system", "Companion & Device", "Wi-Fi, files, updates", WifiHigh],
 ] as const;
-const DETAIL: Record<Exclude<SettingsSection, null>, readonly [string, string, string?][]> = {
-  display: [["Front light", "32%"], ["Sleep screen", "Book cover"], ["Refresh mode", "Fast"], ["Full refresh", "Every 8 pages"], ["Show clock", "On"]],
-  reading: [["Reader font", "Bitter 12 pt"], ["Page layout", "Comfort"], ["Margins", "18 px"], ["Hyphenation", "On"], ["Images", "Display"]],
-  controls: [["Home button", "Home"], ["Side buttons", "Page turn"], ["Power button", "Sleep"], ["Long press", "Quick settings"], ["Touch reader controls", "On"]],
-  companion: [["Wi-Fi", "Proink Home"], ["Companion portal", "proink.local"], ["Calibre wireless", "Ready"], ["Nearby transfer", "Off"], ["Reading sync", "Off"]],
-  device: [["Device name", "Proink X4 Pro"], ["Storage", "6.2 GB free"], ["Files & cache", "Manage"], ["Software update", "Up to date"], ["About Proink", "v0.2.0"]],
+type SettingRow = readonly [label: string, value: string, choices?: readonly string[]];
+const DETAIL: Record<Exclude<SettingsSection, null>, readonly SettingRow[]> = {
+  display: [
+    ["Front light", "On", ["Off", "On"]], ["Brightness", "32%", ["0%", "16%", "32%", "48%", "64%", "80%", "100%"]], ["Warmth", "0%", ["0%", "25%", "50%", "75%", "100%"]], ["Restore light on wake", "On", ["Off", "On"]],
+    ["Sleep screen", "Book cover", ["Book cover", "Reading stats", "Quiet", "Custom"]], ["Sleep after", "2 min", ["1 min", "2 min", "5 min", "Never"]], ["Refresh clean-up", "Every 8 pages", ["Every 4 pages", "Every 8 pages", "Every 12 pages", "Every 16 pages", "Manual"]], ["Status bar", "Clock & battery", ["Clock & battery", "Battery only", "Clock only", "Hidden"]],
+  ],
+  reading: [
+    ["Reader font", "Literata", ["Literata", "Serif", "Sans", "Dyslexic"]], ["Text size", "18 px", ["16 px", "18 px", "20 px", "22 px", "24 px"]], ["Line spacing", "Comfort", ["Compact", "Comfort", "Open"]], ["Margins", "Balanced", ["Narrow", "Balanced", "Wide"]],
+    ["Paragraph spacing", "Standard", ["None", "Standard", "Extra"]], ["Hyphenation", "On", ["Off", "On"]], ["Images", "Show", ["Hide", "Show"]], ["Dictionary", "None", ["None", "English"]], ["Bionic reading", "Off", ["Off", "On"]], ["Guide dots", "Off", ["Off", "On"]], ["Book indexing", "Full section", ["Chapter only", "Full section"]],
+  ],
+  controls: [
+    ["Home button", "Home", ["Home", "Library", "Reading stats"]], ["Side buttons", "Page turn", ["Page turn", "Volume", "Disabled"]], ["Power button", "Sleep", ["Sleep", "Bookmark", "Front light"]], ["Long press", "Quick settings", ["Quick settings", "Home", "Disabled"]],
+    ["Tap left side", "Previous page", ["Previous page", "Menu", "Disabled"]], ["Tap right side", "Next page", ["Next page", "Menu", "Disabled"]], ["Tap centre", "Reader menu", ["Reader menu", "Bookmark", "Disabled"]], ["Touch reader controls", "On", ["Off", "On"]], ["Swipe navigation", "On", ["Off", "On"]],
+  ],
+  system: [
+    ["Wi-Fi", "Proink Home", ["Off", "Proink Home"]], ["Companion portal", "proink.local"], ["Wireless book transfer", "Ready", ["Off", "Ready"]], ["Calibre wireless", "Off", ["Off", "Ready"]],
+    ["Reading sync", "Off", ["Off", "On"]], ["Device name", "Proink X4 Pro"], ["Storage", "6.2 GB free"], ["Files & cache", "Manage"], ["Software update", "Up to date"], ["About Proink", "v0.2.0"],
+  ],
 };
 function Settings({ section, onOpen, onBack }: { section: SettingsSection; onOpen: (section: SettingsSection) => void; onBack: () => void }) {
   if (section) return <SettingsDetail section={section} onBack={onBack} />;
   return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Settings</strong></div><p className="settings-intro">Make the reader feel like yours.</p><div className="settings-menu">{SETTINGS.map(([id, title, note, Icon]) => <button key={id} onClick={() => onOpen(id)}><Icon size={23} /><span><strong>{title}</strong><small>{note}</small></span><b>›</b></button>)}</div></main>;
 }
 function SettingsDetail({ section, onBack }: { section: Exclude<SettingsSection, null>; onBack: () => void }) {
-  const [enabled, setEnabled] = useState<Record<string, boolean>>({});
+  const [values, setValues] = useState<Record<string, string>>({});
   const title = SETTINGS.find(([id]) => id === section)?.[1] ?? "Settings";
-  return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>{title}</strong></div><div className="settings-detail">{DETAIL[section].map(([label, value], index) => <button key={label} onClick={() => (index === 3 || index === 4) && setEnabled((current) => ({ ...current, [label]: !current[label] }))}><span><strong>{label}</strong>{value && <small>{value}</small>}</span>{index === 3 || index === 4 ? <i className={enabled[label] !== false ? "switch on" : "switch"} /> : <b>›</b>}</button>)}</div></main>;
+  return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>{title}</strong></div><p className="settings-intro">Tap a setting to preview its next choice.</p><div className="settings-detail">{DETAIL[section].map(([label, initial, choices]) => { const value = values[label] ?? initial; const isToggle = choices?.length === 2 && choices.includes("Off") && choices.includes("On"); return <button key={label} onClick={() => choices && setValues((current) => ({ ...current, [label]: choices[(choices.indexOf(value) + 1) % choices.length] }))}><span><strong>{label}</strong><small>{value}</small></span>{isToggle ? <i className={value === "On" ? "switch on" : "switch"} /> : choices ? <b>›</b> : <em>Info</em>}</button>; })}</div></main>;
 }
