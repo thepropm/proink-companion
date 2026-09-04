@@ -36,9 +36,9 @@ export function Connect() {
   }
 
   return (
-    <div className="connect-page">
+    <div>
+      <h1 className="page-title">Connect</h1>
       <Card className="connect-card">
-        <h1 className="connect-title">Connect to your Proink</h1>
         <p className="connect-hint">
           Enter the device's IP address, shown on-device under Settings → WiFi. If the device is in setup mode
           (no WiFi configured yet), join its <span className="mono">Proink-…</span> hotspot and use{" "}
@@ -89,3 +89,4 @@ export function Connect() {
     </div>
   );
 }
+

@@ -13,6 +13,7 @@ import {
   Usb,
 } from "@phosphor-icons/react";
 import { useDeviceStatus, useReadingProgress, useOtaCheck, useApplyOta } from "../hooks/useDeviceQueries";
+import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { Card, ProgressBar, Skeleton, Button, EmptyState, ErrorState, Tag } from "../components/ui";
 import "./Dashboard.css";
 
@@ -67,6 +68,7 @@ const SHORTCUTS = [
 ];
 
 export function Dashboard() {
+  const { base } = useDeviceConnection();
   const { data: status, isLoading: statusLoading, isError: statusIsError, error: statusError, refetch: refetchStatus } =
     useDeviceStatus();
   const {
@@ -81,90 +83,112 @@ export function Dashboard() {
 
   return (
     <div className="dashboard">
-      <Card className="welcome-card">
-        <div className="welcome-top">
-          <span className="welcome-eyebrow">
-            <CircleDashed size={10} weight="fill" className={statusIsError ? "dot-danger" : "dot-live"} />
-            {statusIsError ? "Unreachable" : status ? "Connected" : "Connecting…"}
-          </span>
-          {ota?.updateAvailable && <Tag variant="accent">Update available</Tag>}
-        </div>
-        <h1 className="welcome-title">{status?.deviceName ?? "Your Proink"}</h1>
-        <p className="welcome-subtitle">Manage your device over the local network - files, settings, and reading stats.</p>
+      {!base ? (
+        <Card className="welcome-card">
+          <h1 className="welcome-title">Welcome to Proink Companion</h1>
+          <p className="welcome-subtitle">
+            Connect to your device over WiFi to see live status, manage files and settings, and track reading stats.
+          </p>
+          <Link to="/connect">
+            <Button variant="primary">Connect a device</Button>
+          </Link>
+        </Card>
+      ) : (
+        <Card className="welcome-card">
+          <div className="welcome-top">
+            <span className="welcome-eyebrow">
+              <CircleDashed size={10} weight="fill" className={statusIsError ? "dot-danger" : "dot-live"} />
+              {statusIsError ? "Unreachable" : status ? "Connected" : "Connecting…"}
+            </span>
+            {ota?.updateAvailable && <Tag variant="accent">Update available</Tag>}
+          </div>
+          <h1 className="welcome-title">{status?.deviceName ?? "Your Proink"}</h1>
+          <p className="welcome-subtitle">Manage your device over the local network - files, settings, and reading stats.</p>
 
-        {statusIsError ? (
-          <ErrorState message={(statusError as Error).message} onRetry={() => refetchStatus()} />
-        ) : (
-          <div className="welcome-stats">
-            <div className="mini-stat">
-              <span className="mini-stat-label">
-                <Cpu size={13} /> Network
-              </span>
-              {statusLoading || !status ? (
-                <Skeleton height={20} />
-              ) : (
-                <span className="mini-stat-value mono">
-                  {status.ip} · {status.mode.toUpperCase()}
+          {statusIsError ? (
+            <ErrorState message={(statusError as Error).message} onRetry={() => refetchStatus()} />
+          ) : (
+            <div className="welcome-stats">
+              <div className="mini-stat">
+                <span className="mini-stat-label">
+                  <Cpu size={13} /> Network
                 </span>
-              )}
+                {statusLoading || !status ? (
+                  <Skeleton height={20} />
+                ) : (
+                  <span className="mini-stat-value mono">
+                    {status.ip} · {status.mode.toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <div className="mini-stat">
+                <span className="mini-stat-label">
+                  <HardDrive size={13} /> Firmware
+                </span>
+                {statusLoading || !status ? (
+                  <Skeleton height={20} />
+                ) : (
+                  <span className="mini-stat-value mono">{status.firmwareVersion}</span>
+                )}
+              </div>
+              <div className="mini-stat">
+                <span className="mini-stat-label">
+                  <Clock size={13} /> Uptime
+                </span>
+                {statusLoading || !status ? (
+                  <Skeleton height={20} />
+                ) : (
+                  <span className="mini-stat-value">{formatUptime(status.uptimeMs)}</span>
+                )}
+              </div>
             </div>
-            <div className="mini-stat">
-              <span className="mini-stat-label">
-                <HardDrive size={13} /> Firmware
-              </span>
-              {statusLoading || !status ? <Skeleton height={20} /> : <span className="mini-stat-value mono">{status.firmwareVersion}</span>}
-            </div>
-            <div className="mini-stat">
-              <span className="mini-stat-label">
-                <Clock size={13} /> Uptime
-              </span>
-              {statusLoading || !status ? <Skeleton height={20} /> : <span className="mini-stat-value">{formatUptime(status.uptimeMs)}</span>}
-            </div>
-          </div>
-        )}
+          )}
 
-        {ota?.updateAvailable && (
-          <div className="ota-row">
-            <p>
-              Firmware <strong>{ota.latestVersion}</strong> is available (running {ota.currentVersion}).
-            </p>
-            <Button
-              variant="primary"
-              disabled={applyOta.isPending}
-              onClick={() => {
-                applyOta.mutate();
-              }}
-            >
-              {applyOta.isPending ? "Applying…" : "Update now"}
-            </Button>
-          </div>
-        )}
-      </Card>
-
-      <Card className="reading-card">
-        <h2 className="section-eyebrow">
-          <BookOpen size={13} weight="bold" /> Now reading
-        </h2>
-        {progressIsError ? (
-          <ErrorState message={(progressError as Error).message} onRetry={() => refetchProgress()} />
-        ) : progressLoading || !progress ? (
-          <Skeleton height={90} />
-        ) : !progress.hasOpenBook ? (
-          <EmptyState title="Nothing open right now" hint="Start reading on-device to see live progress here." />
-        ) : (
-          <div className="page-preview">
-            <p className="page-preview-title">"{progress.title}"</p>
-            <p className="page-preview-meta">
-              Page {progress.referencePage} of {progress.referencePageCount}
-            </p>
-            <ProgressBar value={progress.progress ?? 0} />
-            <div className="page-preview-footer">
-              <span>{Math.round((progress.progress ?? 0) * 100)}% complete</span>
-              {!!progress.timeLeftEstimateSeconds && <span>~{Math.round(progress.timeLeftEstimateSeconds / 60)} min left</span>}
+          {ota?.updateAvailable && (
+            <div className="ota-row">
+              <p>
+                Firmware <strong>{ota.latestVersion}</strong> is available (running {ota.currentVersion}).
+              </p>
+              <Button
+                variant="primary"
+                disabled={applyOta.isPending}
+                onClick={() => {
+                  applyOta.mutate();
+                }}
+              >
+                {applyOta.isPending ? "Applying…" : "Update now"}
+              </Button>
             </div>
-          </div>
-        )}
-      </Card>
+          )}
+        </Card>
+      )}
+
+      {base && (
+        <Card className="reading-card">
+          <h2 className="section-eyebrow">
+            <BookOpen size={13} weight="bold" /> Now reading
+          </h2>
+          {progressIsError ? (
+            <ErrorState message={(progressError as Error).message} onRetry={() => refetchProgress()} />
+          ) : progressLoading || !progress ? (
+            <Skeleton height={90} />
+          ) : !progress.hasOpenBook ? (
+            <EmptyState title="Nothing open right now" hint="Start reading on-device to see live progress here." />
+          ) : (
+            <div className="page-preview">
+              <p className="page-preview-title">"{progress.title}"</p>
+              <p className="page-preview-meta">
+                Page {progress.referencePage} of {progress.referencePageCount}
+              </p>
+              <ProgressBar value={progress.progress ?? 0} />
+              <div className="page-preview-footer">
+                <span>{Math.round((progress.progress ?? 0) * 100)}% complete</span>
+                {!!progress.timeLeftEstimateSeconds && <span>~{Math.round(progress.timeLeftEstimateSeconds / 60)} min left</span>}
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
 
       <section className="shortcuts">
         <p className="section-eyebrow">Navigate</p>

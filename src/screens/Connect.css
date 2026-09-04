@@ -1,19 +1,6 @@
-.connect-page {
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-5);
-}
-
 .connect-card {
   width: 100%;
   max-width: 420px;
-}
-
-.connect-title {
-  font-size: 22px;
-  margin: 0 0 var(--space-2);
 }
 
 .connect-hint {

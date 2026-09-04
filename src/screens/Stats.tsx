@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Flame, BookOpen, Clock, Trophy, WarningCircle } from "@phosphor-icons/react";
+import { Link } from "react-router-dom";
+import { Flame, BookOpen, Clock, Trophy, WarningCircle, Plugs } from "@phosphor-icons/react";
 import { useDeviceCrashes, useDeviceStats } from "../hooks/useDeviceQueries";
+import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { Card, ErrorState, Skeleton, EmptyState, Button } from "../components/ui";
 import "./Stats.css";
 
@@ -10,9 +12,26 @@ function formatHours(seconds: number): string {
 }
 
 export function Stats() {
+  const { base } = useDeviceConnection();
   const { data: stats, isLoading, error, refetch } = useDeviceStats();
   const { data: crashes } = useDeviceCrashes();
   const [showCrashes, setShowCrashes] = useState(false);
+
+  if (!base) {
+    return (
+      <div>
+        <h1 className="page-title">Stats</h1>
+        <EmptyState
+          icon={<Plugs size={28} />}
+          title="Not connected"
+          hint="Connect to your Proink to see reading stats and the crash log."
+        />
+        <Link to="/connect">
+          <Button variant="primary">Connect a device</Button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>

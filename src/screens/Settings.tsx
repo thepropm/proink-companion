@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Plugs } from "@phosphor-icons/react";
 import { useDeviceSettings, usePatchDeviceSettings } from "../hooks/useDeviceQueries";
-import { Button, Select, TextField, Toggle, Skeleton, ErrorState } from "../components/ui";
+import { useDeviceConnection } from "../hooks/useDeviceConnection";
+import { Button, Select, TextField, Toggle, Skeleton, ErrorState, EmptyState } from "../components/ui";
 import type { ControlAction, DeviceSettings } from "../api/types";
 import "./Settings.css";
 
@@ -44,6 +47,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export function Settings() {
+  const { base } = useDeviceConnection();
   const { data, isLoading, error, refetch } = useDeviceSettings();
   const patch = usePatchDeviceSettings();
   const [form, setForm] = useState<DeviceSettings | null>(null);
@@ -54,6 +58,17 @@ export function Settings() {
     if (data) setForm(data);
   }, [data]);
 
+  if (!base) {
+    return (
+      <div>
+        <h1 className="page-title">Settings</h1>
+        <EmptyState icon={<Plugs size={28} />} title="Not connected" hint="Connect to your Proink to change its settings." />
+        <Link to="/connect">
+          <Button variant="primary">Connect a device</Button>
+        </Link>
+      </div>
+    );
+  }
   if (isLoading || !form) return <Skeleton height={300} />;
   if (error) return <ErrorState message={(error as Error).message} onRetry={() => refetch()} />;
 

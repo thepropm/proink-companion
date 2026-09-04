@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { File, FolderPlus, FolderSimple, Trash, UploadSimple, CaretRight } from "@phosphor-icons/react";
+import { Link } from "react-router-dom";
+import { File, FolderPlus, FolderSimple, Trash, UploadSimple, CaretRight, Plugs } from "@phosphor-icons/react";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { useDirListing, useFileOps } from "../hooks/useDeviceQueries";
 import { Button, EmptyState, ErrorState, Skeleton } from "../components/ui";
@@ -32,6 +33,22 @@ export function Files() {
 
   function goTo(index: number) {
     setDir(index < 0 ? "/" : "/" + segments.slice(0, index + 1).join("/"));
+  }
+
+  if (!api) {
+    return (
+      <div>
+        <h1 className="page-title">Files</h1>
+        <EmptyState
+          icon={<Plugs size={28} />}
+          title="Not connected"
+          hint="Connect to your Proink to browse, upload, and manage files on the SD card."
+        />
+        <Link to="/connect">
+          <Button variant="primary">Connect a device</Button>
+        </Link>
+      </div>
+    );
   }
 
   return (

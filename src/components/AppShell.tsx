@@ -1,4 +1,4 @@
-import { NavLink, Outlet, Navigate, useLocation } from "react-router-dom";
+import { NavLink, Outlet, Link } from "react-router-dom";
 import {
   HouseSimple,
   FolderOpen,
@@ -26,33 +26,27 @@ const NAV_ITEMS = [
   { to: "/about", label: "About", icon: Info },
 ];
 
-// /flash works over USB regardless of whether a device is reachable on
-// WiFi - it's the recovery path for a device with nothing on it yet, so
-// it can't require the same WiFi connection everything else here does.
-const ROUTES_WITHOUT_DEVICE = ["/flash"];
-
 const THEME_CYCLE: ThemePreference[] = ["system", "light", "dark"];
 const THEME_ICON = { system: CircleHalf, light: SunDim, dark: MoonStars };
 
+// The shell itself never gates navigation on being connected - every tool
+// is browsable (Flash needs no device at all; the rest just show their own
+// "not connected" prompt via useDeviceConnection when there's nothing to
+// fetch from). The "Not connected" pill is the way in: it doubles as a
+// link to Connect instead of forcing a redirect the moment the app loads.
 export function AppShell() {
   const { base, disconnect } = useDeviceConnection();
   const { data: status } = useDeviceStatus();
   const { preference, setPreference } = useThemePreference();
-  const location = useLocation();
   const ThemeIcon = THEME_ICON[preference];
-
-  if (!base && !ROUTES_WITHOUT_DEVICE.includes(location.pathname)) return <Navigate to="/connect" replace />;
 
   return (
     <div className="shell">
       <header className="shell-header">
         <div className="shell-header-inner">
           <div className="shell-brand">
-            <img className="shell-logo" src="/proink-companion/icons/icon.svg" alt="" width={36} height={36} />
-            <div>
-              <div className="shell-brand-name">Proink</div>
-              <div className="shell-brand-tagline">Companion</div>
-            </div>
+            <img className="shell-logo" src="/proink-companion/logo.png" alt="Proink" height={26} />
+            <span className="shell-brand-tagline">Companion</span>
           </div>
 
           <nav className="shell-nav">
@@ -78,9 +72,9 @@ export function AppShell() {
                 <span className="mono">{status?.deviceName ?? base.replace(/^https?:\/\//, "")}</span>
               </button>
             ) : (
-              <span className="shell-device-pill shell-device-pill-empty">
+              <Link to="/connect" className="shell-device-pill shell-device-pill-empty">
                 <Plugs size={14} weight="bold" /> Not connected
-              </span>
+              </Link>
             )}
           </div>
         </div>

@@ -30,9 +30,9 @@ export function App() {
             rewrite, so a path-based route on refresh/direct-link would 404. */}
         <HashRouter>
           <Routes>
-            <Route path="/connect" element={<Connect />} />
             <Route element={<AppShell />}>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/connect" element={<Connect />} />
               <Route path="/files" element={<Files />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/stats" element={<Stats />} />
