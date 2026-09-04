@@ -12,6 +12,7 @@ import {
   CircleHalf,
   Usb,
   Wrench,
+  BookOpen,
 } from "@phosphor-icons/react";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { useDeviceStatus } from "../hooks/useDeviceQueries";
@@ -21,6 +22,7 @@ import "./AppShell.css";
 const NAV_ITEMS = [
   { to: "/", label: "Dashboard", icon: HouseSimple, end: true },
   { to: "/files", label: "Files", icon: FolderOpen },
+  { to: "/read", label: "Read", icon: BookOpen },
   { to: "/settings", label: "Settings", icon: GearSix },
   { to: "/stats", label: "Stats", icon: ChartLineUp },
   { to: "/tools", label: "Tools", icon: Wrench },

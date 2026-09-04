@@ -1,0 +1,78 @@
+.read-picker-card {
+  max-width: 480px;
+}
+.read-picker-card .dropzone {
+  margin-top: var(--space-4);
+}
+
+.read-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 160px);
+  min-height: 480px;
+}
+
+.read-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.read-title {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.read-location {
+  font-size: 12px;
+  color: var(--color-ink-faint);
+  flex-shrink: 0;
+}
+
+.read-viewer-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.read-viewer-hidden {
+  display: none;
+}
+
+.read-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: var(--space-4);
+  background: var(--color-surface);
+}
+.read-loading-overlay .skeleton {
+  height: 100% !important;
+}
+
+.read-viewer {
+  flex: 1;
+  min-width: 0;
+}
+
+.read-nav {
+  flex-shrink: 0;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-faint);
+  cursor: pointer;
+}
+.read-nav:hover {
+  background: var(--color-bg);
+  color: var(--color-accent);
+}

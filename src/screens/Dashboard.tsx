@@ -39,6 +39,13 @@ const SHORTCUTS = [
     description: "Browse, upload, download, and organize what's on the SD card.",
   },
   {
+    to: "/read",
+    icon: BookOpen,
+    tone: "success" as const,
+    title: "Read",
+    description: "Read an EPUB right in the browser - from the device, or a local file.",
+  },
+  {
     to: "/settings",
     icon: GearSix,
     tone: "accent" as const,

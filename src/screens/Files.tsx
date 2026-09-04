@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { File, FolderPlus, FolderSimple, Trash, UploadSimple, CaretRight, Plugs } from "@phosphor-icons/react";
+import { File, FolderPlus, FolderSimple, Trash, UploadSimple, CaretRight, Plugs, BookOpen } from "@phosphor-icons/react";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { useDirListing, useFileOps } from "../hooks/useDeviceQueries";
 import { Button, EmptyState, ErrorState, Skeleton } from "../components/ui";
@@ -119,6 +119,11 @@ export function Files() {
                   {!entry.isDir && <span className="file-size mono">{formatBytes(entry.size)}</span>}
                 </button>
                 <div className="file-row-actions">
+                  {!entry.isDir && entry.name.toLowerCase().endsWith(".epub") && (
+                    <Link className="file-read" to={`/read?path=${encodeURIComponent(path)}`}>
+                      <BookOpen size={14} weight="bold" /> Read
+                    </Link>
+                  )}
                   {!entry.isDir && (
                     <a className="file-download" href={api!.downloadUrl(path)} download>
                       Download
