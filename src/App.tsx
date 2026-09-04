@@ -10,6 +10,10 @@ import { Settings } from "./screens/Settings";
 import { Stats } from "./screens/Stats";
 import { About } from "./screens/About";
 import { Flash } from "./screens/Flash";
+import { Tools } from "./screens/Tools";
+import { CoverMaker } from "./screens/CoverMaker";
+import { ImageMaker } from "./screens/ImageMaker";
+import { BookMaker } from "./screens/BookMaker";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
@@ -38,6 +42,10 @@ export function App() {
               <Route path="/stats" element={<Stats />} />
               <Route path="/about" element={<About />} />
               <Route path="/flash" element={<Flash />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/cover-maker" element={<CoverMaker />} />
+              <Route path="/image-maker" element={<ImageMaker />} />
+              <Route path="/book-maker" element={<BookMaker />} />
             </Route>
           </Routes>
         </HashRouter>

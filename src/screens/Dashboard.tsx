@@ -11,6 +11,7 @@ import {
   ArrowRight,
   CircleDashed,
   Usb,
+  Wrench,
 } from "@phosphor-icons/react";
 import { useDeviceStatus, useReadingProgress, useOtaCheck, useApplyOta } from "../hooks/useDeviceQueries";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
@@ -50,6 +51,13 @@ const SHORTCUTS = [
     tone: "success" as const,
     title: "Stats",
     description: "Reading time, streaks, books finished, and the crash log.",
+  },
+  {
+    to: "/tools",
+    icon: Wrench,
+    tone: "info" as const,
+    title: "Tools",
+    description: "Cover, Image, and Book Maker - prep device-native images and books.",
   },
   {
     to: "/flash",

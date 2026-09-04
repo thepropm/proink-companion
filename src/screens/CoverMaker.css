@@ -1,0 +1,54 @@
+.maker-card {
+  max-width: 560px;
+}
+
+.maker-intro {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+.maker-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.maker-fields .field:last-child {
+  grid-column: 1 / -1;
+}
+
+.maker-preview {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+.maker-preview img {
+  max-width: 100%;
+  max-height: 360px;
+  image-rendering: pixelated;
+  box-shadow: 0 1px 3px rgb(var(--color-shadow) / 0.15);
+}
+
+.maker-error {
+  font-size: 13px;
+  color: var(--color-danger);
+  margin: 0 0 var(--space-3);
+}
+
+.maker-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.maker-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

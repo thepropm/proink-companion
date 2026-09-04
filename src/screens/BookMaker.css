@@ -1,0 +1,70 @@
+.book-maker-card {
+  max-width: 640px;
+}
+
+.book-maker-list {
+  list-style: none;
+  margin: var(--space-3) 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.book-maker-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.book-maker-index {
+  width: 20px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-ink-faint);
+  flex-shrink: 0;
+}
+
+.book-maker-thumb {
+  width: 32px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.book-maker-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.book-maker-row-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.book-maker-row-actions button {
+  border: none;
+  background: transparent;
+  color: var(--color-ink-faint);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+.book-maker-row-actions button:hover:not(:disabled) {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+.book-maker-row-actions button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

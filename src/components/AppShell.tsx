@@ -11,6 +11,7 @@ import {
   MoonStars,
   CircleHalf,
   Usb,
+  Wrench,
 } from "@phosphor-icons/react";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { useDeviceStatus } from "../hooks/useDeviceQueries";
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
   { to: "/files", label: "Files", icon: FolderOpen },
   { to: "/settings", label: "Settings", icon: GearSix },
   { to: "/stats", label: "Stats", icon: ChartLineUp },
+  { to: "/tools", label: "Tools", icon: Wrench },
   { to: "/flash", label: "Flash", icon: Usb },
   { to: "/about", label: "About", icon: Info },
 ];
