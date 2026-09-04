@@ -16,6 +16,7 @@ import { Tools } from "./screens/Tools";
 import { CoverMaker } from "./screens/CoverMaker";
 import { ImageMaker } from "./screens/ImageMaker";
 import { BookMaker } from "./screens/BookMaker";
+import { UiLab } from "./screens/UiLab";
 
 // epub.js pulls in jszip/lodash/xmldom and roughly doubles the main bundle
 // - lazy-load it so that weight only loads for someone actually visiting
@@ -61,6 +62,7 @@ export function App() {
               <Route path="/cover-maker" element={<CoverMaker />} />
               <Route path="/image-maker" element={<ImageMaker />} />
               <Route path="/book-maker" element={<BookMaker />} />
+              <Route path="/ui-lab" element={<UiLab />} />
             </Route>
           </Routes>
         </HashRouter>

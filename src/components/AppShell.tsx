@@ -13,6 +13,7 @@ import {
   Usb,
   Wrench,
   BookOpen,
+  DeviceMobile,
 } from "@phosphor-icons/react";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { useDeviceStatus } from "../hooks/useDeviceQueries";
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { to: "/stats", label: "Stats", icon: ChartLineUp },
   { to: "/tools", label: "Tools", icon: Wrench },
   { to: "/flash", label: "Flash", icon: Usb },
+  { to: "/ui-lab", label: "UI lab", icon: DeviceMobile },
   { to: "/about", label: "About", icon: Info },
 ];
 
