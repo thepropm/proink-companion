@@ -1,16 +1,16 @@
 {
   "name": "Proink OS",
-  "version": "latest",
+  "version": "v0.2.0",
   "new_install_prompt_erase": true,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
       "serialType": "cdc",
       "parts": [
-        { "path": "https://github.com/thepropm/proink-os/releases/latest/download/bootloader.bin", "offset": 0 },
-        { "path": "https://github.com/thepropm/proink-os/releases/latest/download/partitions.bin", "offset": 32768 },
-        { "path": "https://github.com/thepropm/proink-os/releases/latest/download/boot_app0.bin", "offset": 57344 },
-        { "path": "https://github.com/thepropm/proink-os/releases/latest/download/firmware.bin", "offset": 65536 }
+        { "path": "https://thepropm.github.io/proink-companion/firmware/v0.2.0/bootloader.bin", "offset": 0 },
+        { "path": "https://thepropm.github.io/proink-companion/firmware/v0.2.0/partitions.bin", "offset": 32768 },
+        { "path": "https://thepropm.github.io/proink-companion/firmware/v0.2.0/boot_app0.bin", "offset": 57344 },
+        { "path": "https://thepropm.github.io/proink-companion/firmware/v0.2.0/firmware.bin", "offset": 65536 }
       ]
     }
   ]
