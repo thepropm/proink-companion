@@ -1,0 +1,230 @@
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 var(--space-5);
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.welcome-card {
+  padding: var(--space-6);
+}
+
+.welcome-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.welcome-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.dot-live {
+  color: var(--color-success);
+}
+.dot-danger {
+  color: var(--color-danger);
+}
+
+.welcome-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-2);
+}
+.welcome-subtitle {
+  color: var(--color-ink-muted);
+  font-size: 14px;
+  margin: 0 0 var(--space-5);
+  max-width: 46ch;
+}
+
+.welcome-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .welcome-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mini-stat {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.mini-stat-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.mini-stat-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ota-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+}
+.ota-row p {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--space-3);
+}
+
+.reading-card {
+  padding: var(--space-5);
+}
+
+.page-preview {
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+.page-preview-title {
+  font-style: italic;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--color-ink);
+}
+.page-preview-meta {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-3);
+}
+.page-preview-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  margin-top: var(--space-2);
+}
+
+.shortcuts {
+  margin-top: var(--space-3);
+}
+.shortcuts-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.shortcuts-subtitle {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-4);
+}
+
+.shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .shortcuts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shortcut-card {
+  display: block;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+.shortcut-card:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+}
+
+.shortcut-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+}
+.shortcut-icon-info {
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+.shortcut-icon-accent {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.shortcut-icon-success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+.shortcut-icon-neutral {
+  background: var(--color-bg);
+  color: var(--color-ink-muted);
+  border: 1px solid var(--color-border-strong);
+}
+
+.shortcut-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.shortcut-description {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+  min-height: 32px;
+}
+.shortcut-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent);
+}

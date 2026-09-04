@@ -1,0 +1,33 @@
+.about-card {
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  max-width: 420px;
+}
+.about-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+}
+.about-bio {
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+  margin: 0 0 var(--space-5);
+}
+.about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+.about-footer {
+  margin-top: var(--space-4);
+  font-size: 12px;
+  color: var(--color-ink-faint);
+  max-width: 420px;
+}

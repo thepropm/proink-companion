@@ -1,0 +1,99 @@
+.connect-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+
+.connect-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.connect-title {
+  font-size: 22px;
+  margin: 0 0 var(--space-2);
+}
+
+.connect-hint {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+.connect-error {
+  font-size: 13px;
+  color: var(--color-danger);
+  margin: 0 0 var(--space-3);
+}
+
+.connect-recent {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.connect-recent-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-2);
+}
+
+.connect-recent ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.connect-recent li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.connect-recent-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+}
+.connect-recent-item:hover {
+  border-color: var(--color-accent);
+}
+.connect-recent-item span:first-of-type {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.connect-recent-addr {
+  font-size: 11px;
+  color: var(--color-ink-faint);
+}
+
+.connect-recent-forget {
+  border: none;
+  background: transparent;
+  color: var(--color-ink-faint);
+  cursor: pointer;
+  padding: var(--space-2);
+}
+.connect-recent-forget:hover {
+  color: var(--color-danger);
+}
