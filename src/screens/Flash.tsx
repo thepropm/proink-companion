@@ -34,7 +34,7 @@ export function Flash() {
         </p>
 
         {supported ? (
-          <esp-web-install-button manifest="/proink-companion/firmware-manifest.json">
+          <esp-web-install-button manifest="/proink-companion/firmware-manifest-v0.2.0.json">
             <button slot="activate" className="btn btn-primary flash-activate">
               <Usb size={16} weight="bold" /> Connect &amp; install
             </button>
