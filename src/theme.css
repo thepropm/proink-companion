@@ -57,6 +57,12 @@
   --color-shadow: 25 23 20;
 }
 
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("../../PressStart2P-Regular.ttf") format("truetype");
+  font-display: block;
+}
+
 :root:not([data-theme="light"]) {
   @media (prefers-color-scheme: dark) {
     --color-bg: #121212;
