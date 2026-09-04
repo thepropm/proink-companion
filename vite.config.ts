@@ -19,6 +19,12 @@ export default defineConfig({
       // same-origin navigations anyway, so device requests are untouched.
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        // GitHub Pages replaces hashed bundles on every deploy. Claim open
+        // tabs immediately and discard old precaches so a returning PWA
+        // cannot request a JavaScript file that no longer exists.
+        clientsClaim: true,
+        skipWaiting: true,
+        cleanupOutdatedCaches: true,
       },
       manifest: {
         name: "Proink Companion",
