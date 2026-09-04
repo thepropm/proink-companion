@@ -10,6 +10,7 @@ import {
   Info,
   ArrowRight,
   CircleDashed,
+  Usb,
 } from "@phosphor-icons/react";
 import { useDeviceStatus, useReadingProgress, useOtaCheck, useApplyOta } from "../hooks/useDeviceQueries";
 import { Card, ProgressBar, Skeleton, Button, EmptyState, ErrorState, Tag } from "../components/ui";
@@ -48,6 +49,13 @@ const SHORTCUTS = [
     tone: "success" as const,
     title: "Stats",
     description: "Reading time, streaks, books finished, and the crash log.",
+  },
+  {
+    to: "/flash",
+    icon: Usb,
+    tone: "mono" as const,
+    title: "Flash",
+    description: "Install the latest Proink OS release over USB.",
   },
   {
     to: "/about",

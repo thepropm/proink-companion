@@ -12,6 +12,7 @@
   "dependencies": {
     "@phosphor-icons/react": "^2.1.7",
     "@tanstack/react-query": "^5.62.7",
+    "esp-web-tools": "^10.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0"
@@ -24,5 +25,8 @@
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
     "vite-plugin-pwa": "^0.21.1"
+  },
+  "overrides": {
+    "@material/web": "2.4.1"
   }
 }

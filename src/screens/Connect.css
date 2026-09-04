@@ -97,3 +97,19 @@
 .connect-recent-forget:hover {
   color: var(--color-danger);
 }
+
+.connect-flash-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  text-decoration: none;
+}
+.connect-flash-link:hover {
+  color: var(--color-accent);
+}

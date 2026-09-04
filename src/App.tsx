@@ -9,6 +9,7 @@ import { Files } from "./screens/Files";
 import { Settings } from "./screens/Settings";
 import { Stats } from "./screens/Stats";
 import { About } from "./screens/About";
+import { Flash } from "./screens/Flash";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
@@ -36,6 +37,7 @@ export function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/about" element={<About />} />
+              <Route path="/flash" element={<Flash />} />
             </Route>
           </Routes>
         </HashRouter>

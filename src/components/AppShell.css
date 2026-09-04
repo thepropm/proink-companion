@@ -122,6 +122,12 @@
 .shell-device-pill:hover {
   opacity: 0.85;
 }
+.shell-device-pill-empty {
+  background: var(--color-bg);
+  color: var(--color-ink-faint);
+  border: 1px solid var(--color-border-strong);
+  cursor: default;
+}
 
 .shell-main {
   flex: 1;

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { WifiHigh, X } from "@phosphor-icons/react";
+import { Link, useNavigate } from "react-router-dom";
+import { WifiHigh, X, Usb } from "@phosphor-icons/react";
 import { useDeviceConnection } from "../hooks/useDeviceConnection";
 import { makeDeviceApi } from "../api/client";
 import { Button, Card, TextField } from "../components/ui";
@@ -81,6 +81,10 @@ export function Connect() {
             </ul>
           </div>
         )}
+
+        <Link to="/flash" className="connect-flash-link">
+          <Usb size={14} weight="bold" /> New device, or nothing installed yet? Flash it over USB
+        </Link>
       </Card>
     </div>
   );
