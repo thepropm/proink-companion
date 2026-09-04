@@ -11,7 +11,7 @@
 .ui-lab-workbench { display: grid; grid-template-columns: 532px minmax(250px, 1fr); align-items: start; gap: 56px; }
 /* The X4 Pro canvas is deliberately fixed, not ratio-scaled: every simulator
    pixel maps to one logical firmware pixel (480 x 800 portrait). */
-.eink-device { box-sizing: border-box; width: 532px; padding: 34px 18px 76px; border: 8px solid #252525; border-radius: 34px; background: linear-gradient(115deg, #161616, #303030 48%, #181818); box-shadow: 0 22px 40px rgb(var(--color-shadow) / .18), inset 0 0 0 2px #4b4b4b; }
+.eink-device { position: relative; box-sizing: border-box; width: 532px; padding: 34px 18px 76px; border: 8px solid #252525; border-radius: 34px; background: linear-gradient(115deg, #161616, #303030 48%, #181818); box-shadow: 0 22px 40px rgb(var(--color-shadow) / .18), inset 0 0 0 2px #4b4b4b; }
 .eink-screen { width: 480px; height: 800px; overflow: hidden; position: relative; background: #f5f4ee; color: #181817; font-family: Georgia, "Times New Roman", serif; font-size: 13px; }
 .eink-clean .eink-screen { animation: eink-clean .42s steps(2, end); }
 @keyframes eink-clean { 45% { filter: invert(1); } }
