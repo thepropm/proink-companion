@@ -4,9 +4,10 @@ import "./UiLab.css";
 
 type Screen = "home" | "library" | "reader" | "quick" | "settings";
 type SettingsSection = "display" | "reading" | "controls" | "system" | null;
-type SettingsPage = SettingsSection | "frontlight" | "sleep" | "sleep-cover" | "sleep-image" | "sleep-text" | "status-bar" | "status-icons" | "refresh";
+type SettingsPage = SettingsSection | "frontlight" | "sleep" | "sleep-cover" | "sleep-image" | "sleep-text" | "status-bar" | "status-icons" | "refresh" | "font-family" | "font-size" | "line-spacing" | "word-spacing" | "text-smoothness";
 type KeyboardRequest = { title: string; value: string; kind: "text" | "time"; onSubmit: (value: string) => void };
 type StatusSettings = { battery: boolean; clock: boolean; date: boolean; wifi: boolean; bluetooth: boolean; sync: boolean; usb: boolean; charging: boolean; light: boolean; sleep: boolean; storage: boolean };
+type ReaderPreferences = { fontFamily: string; fontSize: number; lineSpacing: number; wordSpacing: number; smoothText: boolean };
 
 const BOOKS = [
   ["The Art of Reading", "M. Ito", "42%"], ["The Long Way Home", "S. Baker", "New"], ["Deep Work", "C. Newport", "18%"],
@@ -31,6 +32,7 @@ export function UiLab() {
   const goBack = () => {
     if (keyboard) { setKeyboard(null); return; }
     if (settingsPage === "frontlight" || settingsPage === "sleep" || settingsPage === "status-bar" || settingsPage === "refresh") { setSettingsPage("display"); return; }
+    if (settingsPage === "font-family" || settingsPage === "font-size" || settingsPage === "line-spacing" || settingsPage === "word-spacing" || settingsPage === "text-smoothness") { setSettingsPage("reading"); return; }
     if (settingsPage === "status-icons") { setSettingsPage("status-bar"); return; }
     if (settingsPage === "sleep-cover" || settingsPage === "sleep-image" || settingsPage === "sleep-text") { setSettingsPage("sleep"); return; }
     if (settingsPage) { setSettingsPage(null); return; }
@@ -89,8 +91,7 @@ const DETAIL: Record<Exclude<SettingsSection, null>, readonly SettingRow[]> = {
     ["Front light", "On"], ["Sleep screen", "Book cover"], ["Status bar", "Clock, battery & icons"], ["UI scale", "Small", ["Small", "Normal"]], ["Dark mode", "Off", ["Off", "On"]], ["Refresh clean-up", "Every 10 pages"],
   ],
   reading: [
-    ["Reader font", "Literata", ["Literata", "Serif", "Sans", "Dyslexic"]], ["Text size", "18 px", ["16 px", "18 px", "20 px", "22 px", "24 px"]], ["Line spacing", "Comfort", ["Compact", "Comfort", "Open"]], ["Margins", "Balanced", ["Narrow", "Balanced", "Wide"]],
-    ["Paragraph spacing", "Standard", ["None", "Standard", "Extra"]], ["Hyphenation", "On", ["Off", "On"]], ["Images", "Show", ["Hide", "Show"]], ["Dictionary", "None", ["None", "English"]], ["Bionic reading", "Off", ["Off", "On"]], ["Guide dots", "Off", ["Off", "On"]], ["Book indexing", "Full section", ["Chapter only", "Full section"]],
+    ["Font family", "Literata"], ["Font size", "20 px"], ["Line spacing", "110%"], ["Word spacing", "0 px"], ["Text smoothness", "On"],
   ],
   controls: [
     ["Home button", "Home", ["Home", "Library", "Reading stats"]], ["Side buttons", "Page turn", ["Page turn", "Volume", "Disabled"]], ["Power button", "Sleep", ["Sleep", "Bookmark", "Front light"]], ["Long press", "Quick settings", ["Quick settings", "Home", "Disabled"]],
@@ -103,6 +104,7 @@ const DETAIL: Record<Exclude<SettingsSection, null>, readonly SettingRow[]> = {
 };
 function Settings({ page, onOpen, onBack, onKeyboard, darkMode, onDarkMode, uiScale, onUiScale, statusSettings, onStatusSettings }: { page: SettingsPage; onOpen: (page: SettingsPage) => void; onBack: () => void; onKeyboard: (request: KeyboardRequest) => void; darkMode: boolean; onDarkMode: (value: boolean) => void; uiScale: "small" | "normal"; onUiScale: (value: "small" | "normal") => void; statusSettings: StatusSettings; onStatusSettings: (settings: StatusSettings) => void }) {
   const [refreshChoice, setRefreshChoice] = useState("10 pages");
+  const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>({ fontFamily: "Literata", fontSize: 20, lineSpacing: 110, wordSpacing: 0, smoothText: true });
   if (page === "frontlight") return <FrontLight onBack={onBack} onKeyboard={onKeyboard} />;
   if (page === "sleep") return <SleepScreen onOpen={onOpen} onBack={onBack} />;
   if (page === "sleep-cover") return <SleepCoverPicker onBack={onBack} />;
@@ -110,10 +112,31 @@ function Settings({ page, onOpen, onBack, onKeyboard, darkMode, onDarkMode, uiSc
   if (page === "sleep-text") return <SleepTextEditor onBack={onBack} onKeyboard={onKeyboard} />;
   if (page === "status-bar") return <StatusBarSettings onOpen={onOpen} onBack={onBack} settings={statusSettings} onSettings={onStatusSettings} />;
   if (page === "status-icons") return <StatusIcons onBack={onBack} settings={statusSettings} onSettings={onStatusSettings} />;
+  if (page === "font-family") return <FontFamily onBack={onBack} preferences={readerPreferences} onPreferences={setReaderPreferences} />;
+  if (page === "font-size") return <ReaderAdjustment title="Font size" label="Size" value={readerPreferences.fontSize} min={12} max={28} step={1} unit="px" onBack={onBack} onCommit={(fontSize) => setReaderPreferences((current) => ({ ...current, fontSize }))} />;
+  if (page === "line-spacing") return <ReaderAdjustment title="Line spacing" label="Space between lines" value={readerPreferences.lineSpacing} min={70} max={200} step={5} unit="%" onBack={onBack} onCommit={(lineSpacing) => setReaderPreferences((current) => ({ ...current, lineSpacing }))} />;
+  if (page === "word-spacing") return <ReaderAdjustment title="Word spacing" label="Space between words" value={readerPreferences.wordSpacing} min={-2} max={8} step={1} unit="px" onBack={onBack} onCommit={(wordSpacing) => setReaderPreferences((current) => ({ ...current, wordSpacing }))} />;
+  if (page === "text-smoothness") return <TextSmoothness onBack={onBack} preferences={readerPreferences} onPreferences={setReaderPreferences} />;
   if (page === "refresh") return <><SettingsDetail section="display" onOpen={onOpen} onBack={onBack} refreshChoice={refreshChoice} darkMode={darkMode} onDarkMode={onDarkMode} uiScale={uiScale} onUiScale={onUiScale} /><RefreshDialog choice={refreshChoice} onApply={(choice) => { setRefreshChoice(choice); onOpen("display"); }} /></>;
+  if (page === "reading") return <ReaderSettings onOpen={onOpen} onBack={onBack} preferences={readerPreferences} />;
   if (page) return <SettingsDetail section={page} onOpen={onOpen} onBack={onBack} refreshChoice={refreshChoice} darkMode={darkMode} onDarkMode={onDarkMode} uiScale={uiScale} onUiScale={onUiScale} />;
   return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Settings</strong></div><p className="settings-intro">Make the reader feel like yours.</p><div className="settings-menu">{SETTINGS.map(([id, title, note, Icon]) => <button key={id} onClick={() => onOpen(id)}><Icon size={23} /><span><strong>{title}</strong><small>{note}</small></span><b>›</b></button>)}</div></main>;
 }
+function ReaderSettings({ onOpen, onBack, preferences }: { onOpen: (page: SettingsPage) => void; onBack: () => void; preferences: ReaderPreferences }) {
+  const rows: readonly [SettingsPage, string, string][] = [["font-family", "Font family", preferences.fontFamily], ["font-size", "Font size", `${preferences.fontSize} px`], ["line-spacing", "Line spacing", `${preferences.lineSpacing}%`], ["word-spacing", "Word spacing", `${preferences.wordSpacing} px`], ["text-smoothness", "Text smoothness", preferences.smoothText ? "On" : "Off"]];
+  return <main className="eink-main eink-settings reader-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Reading</strong></div><p className="settings-intro">Typography and page rhythm.</p><div className="settings-detail">{rows.map(([page, label, value]) => <button key={page} onClick={() => onOpen(page)}><span><strong>{label}</strong><small>{value}</small></span><b>›</b></button>)}</div></main>;
+}
+function FontFamily({ onBack, preferences, onPreferences }: { onBack: () => void; preferences: ReaderPreferences; onPreferences: (preferences: ReaderPreferences) => void }) {
+  const fonts = ["Literata", "Bitter", "Atkinson Hyperlegible", "OpenDyslexic", "SD: Ember Mono"] as const;
+  const fontClass = preferences.fontFamily.toLowerCase().replaceAll(" ", "-").replaceAll(":", "");
+  return <main className="eink-main eink-settings font-family-page"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Font family</strong></div><p className={`font-family-sample ${fontClass}`}>The quick brown fox jumps over the lazy dog.</p><p className="settings-intro">Preview &quot;{preferences.fontFamily}&quot;</p><div className="font-family-list">{fonts.map((font) => <button key={font} className={preferences.fontFamily === font ? "selected" : ""} onClick={() => onPreferences({ ...preferences, fontFamily: font })}><span className={font.toLowerCase().replaceAll(" ", "-").replaceAll(":", "")}>{font}</span><b>{preferences.fontFamily === font ? "Selected" : "Preview"}</b></button>)}</div><small className="font-source-note">Built-in fonts and compatible fonts in Fonts/ on the SD card appear here.</small></main>;
+}
+function ReaderAdjustment({ title, label, value, min, max, step, unit, onBack, onCommit }: { title: string; label: string; value: number; min: number; max: number; step: number; unit: string; onBack: () => void; onCommit: (value: number) => void }) {
+  const [draft, setDraft] = useState(value);
+  const change = (amount: number) => setDraft((current) => Math.max(min, Math.min(max, current + amount)));
+  return <main className="eink-main eink-settings reader-adjustment"><div className="screen-title"><button onClick={onBack}>‹</button><strong>{title}</strong></div><p className="reader-adjustment-preview" style={{ fontSize: title === "Font size" ? `${draft}px` : undefined, lineHeight: title === "Line spacing" ? draft / 100 : undefined, wordSpacing: title === "Word spacing" ? `${draft}px` : undefined }}>A quiet page makes room for the words that matter.</p><section><output>{draft}{unit}</output><div className="reader-adjustment-control"><button onClick={() => change(-step)} aria-label={`Decrease ${label}`}>−</button><input type="range" min={min} max={max} step={step} value={draft} onChange={(event) => setDraft(Number(event.target.value))} aria-label={label} /><button onClick={() => change(step)} aria-label={`Increase ${label}`}>+</button></div><div className="reader-adjustment-range"><span>{min}{unit}</span><span>{max}{unit}</span></div></section><div className="reader-adjustment-actions"><button className="primary" onClick={() => { onCommit(draft); onBack(); }}>Confirm</button><button onClick={onBack}>Cancel</button></div></main>;
+}
+function TextSmoothness({ onBack, preferences, onPreferences }: { onBack: () => void; preferences: ReaderPreferences; onPreferences: (preferences: ReaderPreferences) => void }) { return <main className="eink-main eink-settings text-smoothness"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Text smoothness</strong></div><p className="reader-adjustment-preview">Reading should feel calm, crisp, and easy on the eyes.</p><button className="setting-toggle" onClick={() => onPreferences({ ...preferences, smoothText: !preferences.smoothText })}><span><strong>Text smoothness</strong><small>{preferences.smoothText ? "Softer letter edges for small text" : "Sharper letter edges with more contrast"}</small></span><i className={preferences.smoothText ? "switch on" : "switch"} /></button><p className="settings-intro">Text smoothness is the plain-language name for anti-aliasing. On e-ink it blends letter edges; turning it off makes text crisper but can look more jagged.</p></main>; }
 function SettingsDetail({ section, onOpen, onBack, refreshChoice, darkMode, onDarkMode, uiScale, onUiScale }: { section: Exclude<SettingsSection, null>; onOpen: (page: SettingsPage) => void; onBack: () => void; refreshChoice?: string; darkMode: boolean; onDarkMode: (value: boolean) => void; uiScale: "small" | "normal"; onUiScale: (value: "small" | "normal") => void }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const title = SETTINGS.find(([id]) => id === section)?.[1] ?? "Settings";
