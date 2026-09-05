@@ -8,10 +8,11 @@
 .segmented { display: flex; padding: 3px; border: 1px solid var(--color-border-strong); border-radius: 9px; }
 .segmented button { flex: 1; border: 0; border-radius: 6px; padding: 7px 5px; background: transparent; color: var(--color-ink-muted); font-size: 11px; font-weight: 700; cursor: pointer; }
 .segmented button.selected { background: var(--color-primary); color: var(--color-primary-ink); }
-.ui-lab-workbench { display: grid; grid-template-columns: 532px minmax(250px, 1fr); align-items: start; gap: 56px; }
+.ui-lab-workbench { display: grid; grid-template-columns: 558px minmax(250px, 1fr); align-items: start; gap: 56px; }
 /* The X4 Pro canvas is deliberately fixed, not ratio-scaled: every simulator
    pixel maps to one logical firmware pixel (480 x 800 portrait). */
 .eink-device { position: relative; box-sizing: border-box; width: 532px; padding: 34px 18px 76px; border: 8px solid #252525; border-radius: 34px; background: linear-gradient(115deg, #161616, #303030 48%, #181818); box-shadow: 0 22px 40px rgb(var(--color-shadow) / .18), inset 0 0 0 2px #4b4b4b; }
+.eink-device-frame { position: relative; width: 558px; height: 926px; }.eink-device-frame > .eink-device { position: absolute; top: 0; transform-origin: top left; }
 .eink-screen { width: 480px; height: 800px; overflow: hidden; position: relative; background: #f5f4ee; color: #181817; font-family: Georgia, "Times New Roman", serif; font-size: 13px; }
 .eink-screen.eink-dark { filter: invert(1); }.eink-screen.ui-scale-normal .eink-main { transform: scale(1.05); transform-origin: top left; width: 95.24%; }.eink-screen.ui-scale-large .eink-main { transform: scale(1.1); transform-origin: top left; width: 90.91%; }.eink-screen.ui-scale-normal .eink-status { font-size: 12px; }.eink-screen.ui-scale-large .eink-status { font-size: 13px; }
 .eink-clean .eink-screen { animation: eink-clean .42s steps(2, end); }
@@ -35,4 +36,4 @@
 .ui-lab-notes { padding: 12px 0; }.ui-lab-notes h2 { font-size: 24px; letter-spacing: -.7px; }.ui-lab-notes ul { padding-left: 18px; color: var(--color-ink-muted); line-height: 1.7; }.ui-lab-note { margin-top: 24px; padding: 16px; border-left: 3px solid var(--color-accent); background: var(--color-accent-soft); color: var(--color-ink-muted); line-height: 1.5; }
 .status-controls { display: grid; gap: 5px; }.status-toggle { min-height: 54px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid #999; background: transparent; color: inherit; text-align: left; cursor: pointer; }.status-toggle span { display: grid; gap: 3px; }.status-toggle strong { font: 11px ui-monospace, monospace; }.status-toggle small { color: #666; font: 9px ui-monospace, monospace; }.status-toggle .switch { margin-left: auto; }.icon-controls .status-toggle { min-height: 48px; }
 .eink-settings .status-controls { gap: 9px; }.eink-settings .status-toggle { border-color: #181817; border-radius: 9px; }.eink-settings .status-icons-link { margin-top: 12px; }
-@media (max-width: 800px) { .ui-lab-intro, .ui-lab-workbench { grid-template-columns: 1fr; display: grid; }.ui-lab-controls { width: auto; }.ui-lab-workbench { overflow-x: auto; padding-bottom: 20px; }.ui-lab-notes { padding-top: 0; } }
+@media (max-width: 900px) { .ui-lab { max-width: 100%; overflow-x: hidden; }.ui-lab-intro, .ui-lab-workbench { grid-template-columns: minmax(0, 1fr); display: grid; }.ui-lab-controls { width: auto; }.ui-lab-workbench { overflow-x: hidden; padding-bottom: 20px; gap: 24px; }.eink-device-frame { margin-inline: auto; }.ui-lab-notes { padding-top: 0; } }

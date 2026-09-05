@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowsClockwise, BatteryHigh, Bluetooth, BookOpen, BookmarkSimple, ChartBar, FileArrowUp, FolderSimple, GearSix, GridFour, HardDrive, Lightbulb, ListBullets, MagnifyingGlass, Moon, SlidersHorizontal, Sliders, SunDim, Usb, WifiHigh } from "@phosphor-icons/react";
 import "./UiLab.css";
 
@@ -25,6 +25,8 @@ export function UiLab() {
   const [statusSettings, setStatusSettings] = useState<StatusSettings>({ battery: true, clock: true, date: false, wifi: true, bluetooth: false, sync: true, usb: false, charging: false, light: false, sleep: false, storage: false });
   const [settingsPage, setSettingsPage] = useState<SettingsPage>(null);
   const [keyboard, setKeyboard] = useState<KeyboardRequest | null>(null);
+  const [deviceScale, setDeviceScale] = useState(1);
+  const workbenchRef = useRef<HTMLDivElement>(null);
   const goHome = () => { setKeyboard(null); setScreen("home"); };
   const goBack = () => {
     if (keyboard) { setKeyboard(null); return; }
@@ -55,9 +57,20 @@ export function UiLab() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [focusedApp, screen]);
+  useEffect(() => {
+    const updateDeviceScale = () => {
+      // The 558px footprint includes the shell and the side hardware keys.
+      const availableWidth = workbenchRef.current?.clientWidth ?? window.innerWidth;
+      setDeviceScale(Math.min(1, Math.max(.1, availableWidth / 558)));
+    };
+    updateDeviceScale();
+    const observer = new ResizeObserver(updateDeviceScale);
+    if (workbenchRef.current) observer.observe(workbenchRef.current);
+    return () => observer.disconnect();
+  }, []);
   return <section className="ui-lab">
     <div className="ui-lab-intro"><div><p className="eyebrow">Offline design prototype</p><h1>Proink UI Lab</h1><p>Test the real X4 Pro portrait canvas before we change firmware. Nothing here connects to a device or needs the internet.</p></div><div className="ui-lab-controls"><div className="segmented" role="group" aria-label="Refresh preview"><button className={speed === "fast" ? "selected" : ""} onClick={() => setSpeed("fast")}>Fast refresh</button><button className={speed === "clean" ? "selected" : ""} onClick={() => setSpeed("clean")}>Full clean</button></div><p><strong>{speed === "fast" ? "Fast" : "Full"}</strong> preview: {speed === "fast" ? "no animation, partial e-ink update" : "white-flash cleaning pass"}</p></div></div>
-    <div className="ui-lab-workbench"><div className={`eink-device ${speed === "clean" ? "eink-clean" : ""}`}><button className="hardware-key hardware-key-left" onClick={goBack} aria-label="Physical Back button" /><button className="hardware-key hardware-key-right-top" onClick={() => setScreen("quick")} aria-label="Physical light button" /><button className="hardware-key hardware-key-right-bottom" onClick={() => openHomeApp(0)} aria-label="Physical Library button" /><div className={`eink-screen ${darkMode ? "eink-dark" : ""} ui-scale-${uiScale}`}><StatusBar settings={statusSettings} />{screen === "home" && <Home focusedApp={focusedApp} onFocus={setFocusedApp} onOpen={openHomeApp} onRead={() => setScreen("reader")} />}{screen === "library" && <Library grid={grid} onGrid={() => setGrid((value) => !value)} onBack={goHome} onKeyboard={setKeyboard} />}{screen === "reader" && <Reader onQuick={() => setScreen("quick")} />}{screen === "quick" && <QuickSettings light={light} onLight={setLight} onBack={() => setScreen("reader")} />}{screen === "settings" && <Settings page={settingsPage} onOpen={setSettingsPage} onBack={goBack} onKeyboard={setKeyboard} darkMode={darkMode} onDarkMode={setDarkMode} uiScale={uiScale} onUiScale={setUiScale} statusSettings={statusSettings} onStatusSettings={setStatusSettings} />}{keyboard && <EinkKeyboard request={keyboard} onClose={() => setKeyboard(null)} />}</div><button className="hardware-home" onClick={goHome} aria-label="Physical Home button" /></div><aside className="ui-lab-notes"><p className="eyebrow">Hardware rules</p><h2>Design within the panel</h2><ul><li>Logical display: <strong>480 x 800</strong> portrait.</li><li>Black, white, and light dither only.</li><li>Touch targets: minimum <strong>44 px</strong>.</li><li>Fast refresh for navigation; full refresh after a short cadence.</li></ul><p className="ui-lab-note"><strong>Render contract:</strong> one static redraw per confirmed action, persistent focus instead of press animation, cached metadata before the Home screen opens, and bounded background indexing. Use the arrow keys here to test the launcher focus.</p></aside></div>
+    <div className="ui-lab-workbench" ref={workbenchRef}><div className="eink-device-frame" style={{ width: `${558 * deviceScale}px`, height: `${926 * deviceScale}px` }}><div className={`eink-device ${speed === "clean" ? "eink-clean" : ""}`} style={{ left: `${13 * deviceScale}px`, transform: `scale(${deviceScale})` }}><button className="hardware-key hardware-key-left" onClick={goBack} aria-label="Physical Back button" /><button className="hardware-key hardware-key-right-top" onClick={() => setScreen("quick")} aria-label="Physical light button" /><button className="hardware-key hardware-key-right-bottom" onClick={() => openHomeApp(0)} aria-label="Physical Library button" /><div className={`eink-screen ${darkMode ? "eink-dark" : ""} ui-scale-${uiScale}`}><StatusBar settings={statusSettings} />{screen === "home" && <Home focusedApp={focusedApp} onFocus={setFocusedApp} onOpen={openHomeApp} onRead={() => setScreen("reader")} />}{screen === "library" && <Library grid={grid} onGrid={() => setGrid((value) => !value)} onBack={goHome} onKeyboard={setKeyboard} />}{screen === "reader" && <Reader onQuick={() => setScreen("quick")} />}{screen === "quick" && <QuickSettings light={light} onLight={setLight} onBack={() => setScreen("reader")} />}{screen === "settings" && <Settings page={settingsPage} onOpen={setSettingsPage} onBack={goBack} onKeyboard={setKeyboard} darkMode={darkMode} onDarkMode={setDarkMode} uiScale={uiScale} onUiScale={setUiScale} statusSettings={statusSettings} onStatusSettings={setStatusSettings} />}{keyboard && <EinkKeyboard request={keyboard} onClose={() => setKeyboard(null)} />}</div><button className="hardware-home" onClick={goHome} aria-label="Physical Home button" /></div></div><aside className="ui-lab-notes"><p className="eyebrow">Hardware rules</p><h2>Design within the panel</h2><ul><li>Logical display: <strong>480 x 800</strong> portrait.</li><li>Black, white, and light dither only.</li><li>Touch targets: minimum <strong>44 px</strong>.</li><li>Fast refresh for navigation; full refresh after a short cadence.</li></ul><p className="ui-lab-note"><strong>Render contract:</strong> one static redraw per confirmed action, persistent focus instead of press animation, cached metadata before the Home screen opens, and bounded background indexing. Use the arrow keys here to test the launcher focus.</p></aside></div>
   </section>;
 }
 
