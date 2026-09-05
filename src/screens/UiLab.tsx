@@ -21,7 +21,7 @@ export function UiLab() {
   const [speed, setSpeed] = useState<"fast" | "clean">("fast");
   const [light, setLight] = useState(32);
   const [darkMode, setDarkMode] = useState(false);
-  const [uiScale, setUiScale] = useState<"small" | "normal" | "large">("small");
+  const [uiScale, setUiScale] = useState<"small" | "normal">("small");
   const [statusSettings, setStatusSettings] = useState<StatusSettings>({ battery: true, clock: true, date: false, wifi: true, bluetooth: false, sync: true, usb: false, charging: false, light: false, sleep: false, storage: false });
   const [settingsPage, setSettingsPage] = useState<SettingsPage>(null);
   const [keyboard, setKeyboard] = useState<KeyboardRequest | null>(null);
@@ -86,7 +86,7 @@ const SETTINGS = [
 type SettingRow = readonly [label: string, value: string, choices?: readonly string[]];
 const DETAIL: Record<Exclude<SettingsSection, null>, readonly SettingRow[]> = {
   display: [
-    ["Front light", "On"], ["Sleep screen", "Book cover"], ["Status bar", "Clock, battery & icons"], ["UI scale", "Small", ["Small", "Normal", "Large"]], ["Dark mode", "Off", ["Off", "On"]], ["Refresh clean-up", "Every 10 pages"],
+    ["Front light", "On"], ["Sleep screen", "Book cover"], ["Status bar", "Clock, battery & icons"], ["UI scale", "Small", ["Small", "Normal"]], ["Dark mode", "Off", ["Off", "On"]], ["Refresh clean-up", "Every 10 pages"],
   ],
   reading: [
     ["Reader font", "Literata", ["Literata", "Serif", "Sans", "Dyslexic"]], ["Text size", "18 px", ["16 px", "18 px", "20 px", "22 px", "24 px"]], ["Line spacing", "Comfort", ["Compact", "Comfort", "Open"]], ["Margins", "Balanced", ["Narrow", "Balanced", "Wide"]],
@@ -101,7 +101,7 @@ const DETAIL: Record<Exclude<SettingsSection, null>, readonly SettingRow[]> = {
     ["Reading sync", "Off", ["Off", "On"]], ["Device name", "Proink X4 Pro"], ["Storage", "6.2 GB free"], ["Files & cache", "Manage"], ["Software update", "Up to date"], ["About Proink", "v0.2.0"],
   ],
 };
-function Settings({ page, onOpen, onBack, onKeyboard, darkMode, onDarkMode, uiScale, onUiScale, statusSettings, onStatusSettings }: { page: SettingsPage; onOpen: (page: SettingsPage) => void; onBack: () => void; onKeyboard: (request: KeyboardRequest) => void; darkMode: boolean; onDarkMode: (value: boolean) => void; uiScale: "small" | "normal" | "large"; onUiScale: (value: "small" | "normal" | "large") => void; statusSettings: StatusSettings; onStatusSettings: (settings: StatusSettings) => void }) {
+function Settings({ page, onOpen, onBack, onKeyboard, darkMode, onDarkMode, uiScale, onUiScale, statusSettings, onStatusSettings }: { page: SettingsPage; onOpen: (page: SettingsPage) => void; onBack: () => void; onKeyboard: (request: KeyboardRequest) => void; darkMode: boolean; onDarkMode: (value: boolean) => void; uiScale: "small" | "normal"; onUiScale: (value: "small" | "normal") => void; statusSettings: StatusSettings; onStatusSettings: (settings: StatusSettings) => void }) {
   const [refreshChoice, setRefreshChoice] = useState("10 pages");
   if (page === "frontlight") return <FrontLight onBack={onBack} onKeyboard={onKeyboard} />;
   if (page === "sleep") return <SleepScreen onOpen={onOpen} onBack={onBack} />;
@@ -114,11 +114,11 @@ function Settings({ page, onOpen, onBack, onKeyboard, darkMode, onDarkMode, uiSc
   if (page) return <SettingsDetail section={page} onOpen={onOpen} onBack={onBack} refreshChoice={refreshChoice} darkMode={darkMode} onDarkMode={onDarkMode} uiScale={uiScale} onUiScale={onUiScale} />;
   return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>Settings</strong></div><p className="settings-intro">Make the reader feel like yours.</p><div className="settings-menu">{SETTINGS.map(([id, title, note, Icon]) => <button key={id} onClick={() => onOpen(id)}><Icon size={23} /><span><strong>{title}</strong><small>{note}</small></span><b>›</b></button>)}</div></main>;
 }
-function SettingsDetail({ section, onOpen, onBack, refreshChoice, darkMode, onDarkMode, uiScale, onUiScale }: { section: Exclude<SettingsSection, null>; onOpen: (page: SettingsPage) => void; onBack: () => void; refreshChoice?: string; darkMode: boolean; onDarkMode: (value: boolean) => void; uiScale: "small" | "normal" | "large"; onUiScale: (value: "small" | "normal" | "large") => void }) {
+function SettingsDetail({ section, onOpen, onBack, refreshChoice, darkMode, onDarkMode, uiScale, onUiScale }: { section: Exclude<SettingsSection, null>; onOpen: (page: SettingsPage) => void; onBack: () => void; refreshChoice?: string; darkMode: boolean; onDarkMode: (value: boolean) => void; uiScale: "small" | "normal"; onUiScale: (value: "small" | "normal") => void }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const title = SETTINGS.find(([id]) => id === section)?.[1] ?? "Settings";
   const openDedicatedPage = (label: string): SettingsPage => label === "Front light" ? "frontlight" : label === "Sleep screen" ? "sleep" : label === "Status bar" ? "status-bar" : label === "Refresh clean-up" ? "refresh" : null;
-  return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>{title}</strong></div><p className="settings-intro">Tap a setting to preview its next choice.</p><div className="settings-detail">{DETAIL[section].map(([label, initial, choices]) => { const initialValue = label === "Refresh clean-up" && refreshChoice ? refreshChoice : label === "Dark mode" ? darkMode ? "On" : "Off" : label === "UI scale" ? `${uiScale.charAt(0).toUpperCase()}${uiScale.slice(1)}` : initial; const value = values[label] ?? initialValue; const dedicatedPage = openDedicatedPage(label); const isToggle = choices?.length === 2 && choices.includes("Off") && choices.includes("On"); return <button key={label} onClick={() => dedicatedPage ? onOpen(dedicatedPage) : label === "Dark mode" ? onDarkMode(!darkMode) : label === "UI scale" ? onUiScale(value === "Small" ? "normal" : value === "Normal" ? "large" : "small") : choices && setValues((current) => ({ ...current, [label]: choices[(choices.indexOf(value) + 1) % choices.length] }))}><span><strong>{label}</strong><small>{value}</small></span>{isToggle ? <i className={value === "On" ? "switch on" : "switch"} /> : choices || dedicatedPage ? <b>›</b> : <em>Info</em>}</button>; })}</div></main>;
+  return <main className="eink-main eink-settings"><div className="screen-title"><button onClick={onBack}>‹</button><strong>{title}</strong></div><p className="settings-intro">Tap a setting to preview its next choice.</p><div className="settings-detail">{DETAIL[section].map(([label, initial, choices]) => { const initialValue = label === "Refresh clean-up" && refreshChoice ? refreshChoice : label === "Dark mode" ? darkMode ? "On" : "Off" : label === "UI scale" ? `${uiScale.charAt(0).toUpperCase()}${uiScale.slice(1)}` : initial; const value = values[label] ?? initialValue; const dedicatedPage = openDedicatedPage(label); const isToggle = choices?.length === 2 && choices.includes("Off") && choices.includes("On"); return <button key={label} onClick={() => dedicatedPage ? onOpen(dedicatedPage) : label === "Dark mode" ? onDarkMode(!darkMode) : label === "UI scale" ? onUiScale(value === "Small" ? "normal" : "small") : choices && setValues((current) => ({ ...current, [label]: choices[(choices.indexOf(value) + 1) % choices.length] }))}><span><strong>{label}</strong><small>{value}</small></span>{isToggle ? <i className={value === "On" ? "switch on" : "switch"} /> : choices || dedicatedPage ? <b>›</b> : <em>Info</em>}</button>; })}</div></main>;
 }
 function FrontLight({ onBack, onKeyboard }: { onBack: () => void; onKeyboard: (request: KeyboardRequest) => void }) {
   const [enabled, setEnabled] = useState(true); const [brightness, setBrightness] = useState(32); const [warmth, setWarmth] = useState(0); const [scheduled, setScheduled] = useState(true); const [start, setStart] = useState("8:00 PM"); const [end, setEnd] = useState("7:00 AM");
