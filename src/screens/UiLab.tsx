@@ -3550,7 +3550,6 @@ function EinkKeyboard({
   const [shift, setShift] = useState<"off" | "once" | "lock">("off");
   const [symbols, setSymbols] = useState(request.kind === "time");
   const letters = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
-  const symbolRows = ["@#$%&*-_!", "[]{}=<>|/", "\\\"':;?+()", "~`^,.;@#&"];
   const update = (next: string, nextCursor = cursor) => {
     setValue(next);
     setCursor(nextCursor);
@@ -3608,35 +3607,26 @@ function EinkKeyboard({
             ? "next letter uppercase"
             : request.title}
       </p>
-      {symbols ? (
-        symbolRows.map((keys, index) =>
-          row(keys, index === 0 ? "symbol-strip" : ""),
-        )
-      ) : (
-        <>
-          {row("@#$%&*-_!", "symbol-strip")}
-          {row("1234567890", "number-row")}
-          {letters.slice(0, 2).map((keys) => row(keys))}
-          <div className="keyboard-row shift-row">
-            <button
-              className={shift === "off" ? "key-shift" : "key-shift active"}
-              onClick={toggleShift}
-            >
-              {shift === "lock" ? "CAPS" : "Shift"}
-            </button>
-            {letters[2].split("").map((key) => (
-              <button
-                key={key}
-                onClick={() =>
-                  insert(shift === "off" ? key : key.toUpperCase())
-                }
-              >
-                {shift === "off" ? key : key.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+      {row(symbols ? "[]{}=<>|/" : "@#$%&*-_!", "symbol-strip")}
+      {row(symbols ? "~`^,.;@#&" : "1234567890", "number-row")}
+      {row(symbols ? "!?:;\"'+-()" : letters[0])}
+      {row(symbols ? "_\\|/<>[]{}" : letters[1])}
+      <div className="keyboard-row shift-row">
+        <button
+          className={shift === "off" ? "key-shift" : "key-shift active"}
+          onClick={toggleShift}
+        >
+          {shift === "lock" ? "CAPS" : "Shift"}
+        </button>
+        {(symbols ? "@#$%&*-_!" : letters[2]).split("").map((key, index) => (
+          <button
+            key={`${key}-${index}`}
+            onClick={() => insert(shift === "off" || symbols ? key : key.toUpperCase())}
+          >
+            {shift === "off" || symbols ? key : key.toUpperCase()}
+          </button>
+        ))}
+      </div>
       <div className="keyboard-row keyboard-bottom">
         <button onClick={() => setSymbols((current) => !current)}>
           {symbols ? "abc" : "?123"}

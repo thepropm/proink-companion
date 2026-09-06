@@ -1924,13 +1924,18 @@ fieldset:disabled {
     serif;
 }
 .eink-keyboard {
-  height: 386px;
+  height: 352px;
+  padding: 9px 14px 11px;
+}
+.keyboard-heading,
+.keyboard-tip {
+  display: none;
 }
 .keyboard-row {
-  height: 43px;
+  height: 52px;
 }
 .keyboard-row.symbol-strip {
-  height: 28px;
+  height: 36px;
 }
 .keyboard-row.symbol-strip button {
   min-width: 0;
@@ -1940,10 +1945,11 @@ fieldset:disabled {
   margin-bottom: 5px;
 }
 .keyboard-bottom {
-  margin-top: 3px;
+  height: 56px;
+  margin-top: 0;
 }
 .keyboard-bottom .key-space {
-  height: 19px;
+  height: 28px;
   font-size: 18px;
 }
 .keyboard-bottom .key-apply {
