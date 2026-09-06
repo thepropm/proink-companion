@@ -1976,6 +1976,39 @@ fieldset:disabled {
 .shift-row .key-symbol-page {
   font-size: 12px;
 }
+.shift-row .key-shift,
+.shift-row .key-backspace {
+  min-width: 48px;
+  height: 43px;
+  align-self: center;
+  border: 1.5px solid #181817;
+  border-radius: 8px;
+  background: transparent;
+}
+.shift-row .key-shift {
+  font-size: 29px;
+  line-height: 1;
+}
+.shift-row .key-symbol-page {
+  font-size: 13px;
+}
+.shift-row .key-backspace {
+  font: 31px/1 Georgia, serif;
+}
+.keyboard-bottom > button {
+  box-sizing: border-box;
+  height: 43px;
+  align-self: center;
+  border: 1.5px solid #181817;
+  border-radius: 0;
+}
+.keyboard-bottom > button:first-child {
+  background: transparent;
+  color: inherit;
+}
+.keyboard-bottom .key-space {
+  border: 1.5px solid #181817;
+}
 .eink-reader {
   position: relative;
   overflow: hidden;

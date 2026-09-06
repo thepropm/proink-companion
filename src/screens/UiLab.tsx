@@ -3634,7 +3634,7 @@ function EinkKeyboard({
             {shift === "off" || symbols ? key : key.toUpperCase()}
           </button>
         ))}
-        <button className="key-backspace" onClick={remove} aria-label="Backspace">⌫</button>
+        <button className="key-backspace" onClick={remove} aria-label="Backspace">×</button>
       </div>
       <div className="keyboard-row keyboard-bottom">
         <button onClick={() => setSymbols((current) => !current)}>
