@@ -388,7 +388,7 @@ export function UiLab() {
                 />
               )}
               {screen === "reader" && (
-                <Reader onQuick={() => setScreen("quick")} />
+                <Reader light={light} onLight={setLight} />
               )}
               {screen === "quick" && (
                 <QuickSettings
@@ -741,7 +741,13 @@ function Files({
     </main>
   );
 }
-function Reader({ onQuick }: { onQuick: () => void }) {
+function Reader({
+  light,
+  onLight,
+}: {
+  light: number;
+  onLight: (value: number) => void;
+}) {
   const [page, setPage] = useState(86);
   const [fontSize, setFontSize] = useState(19);
   const [menu, setMenu] = useState<
@@ -751,7 +757,10 @@ function Reader({ onQuick }: { onQuick: () => void }) {
   const [lookup, setLookup] = useState<"dictionary" | "clip" | null>(null);
   const [clipCount, setClipCount] = useState(0);
   const [screenshot, setScreenshot] = useState(false);
-  const touchStart = useRef<number | null>(null);
+  const [readerMenuOpen, setReaderMenuOpen] = useState(false);
+  const [quickPanel, setQuickPanel] = useState(false);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const swiped = useRef(false);
   const advance = (amount: number) =>
     setPage((current) => Math.max(1, Math.min(204, current + amount)));
   const selectText = () => {
@@ -760,30 +769,51 @@ function Reader({ onQuick }: { onQuick: () => void }) {
   };
   const gestureEnd = (event: React.TouchEvent) => {
     if (touchStart.current === null) return;
-    const distance = event.changedTouches[0].clientY - touchStart.current;
+    const touch = event.changedTouches[0];
+    const distance = touch.clientY - touchStart.current.y;
+    const horizontal = Math.abs(touch.clientX - touchStart.current.x);
     touchStart.current = null;
-    if (distance < -52) setMenu("contents");
-    if (distance > 52) onQuick();
+    if (horizontal > 42 || Math.abs(distance) < 52) return;
+    event.preventDefault();
+    swiped.current = true;
+    if (distance < 0) {
+      setQuickPanel(false);
+      setReaderMenuOpen(true);
+      setMenu("contents");
+    } else {
+      setReaderMenuOpen(false);
+      setMenu(null);
+      setQuickPanel(true);
+    }
   };
   return (
     <main
       className="eink-reader"
       onTouchStart={(event) => {
-        touchStart.current = event.touches[0].clientY;
+        touchStart.current = {
+          x: event.touches[0].clientX,
+          y: event.touches[0].clientY,
+        };
       }}
       onTouchEnd={gestureEnd}
     >
       <div className="reader-top">
         <button onClick={() => advance(-1)}>‹</button>
         <span>The Art of Reading</span>
-        <button onClick={onQuick}>
+        <button onClick={() => setQuickPanel(true)}>
           <SunDim size={18} />
         </button>
       </div>
       <div
         className="reader-page"
         style={{ fontSize }}
-        onClick={() => advance(1)}
+        onClick={() => {
+          if (swiped.current) {
+            swiped.current = false;
+            return;
+          }
+          advance(1);
+        }}
       >
         <p className="reader-chapter">CHAPTER THREE</p>
         <h2>Reading as a practice</h2>
@@ -856,12 +886,22 @@ function Reader({ onQuick }: { onQuick: () => void }) {
           </p>
         </ReaderSheet>
       )}
-      {menu && (
+      {quickPanel && (
+        <ReaderQuickPanel
+          light={light}
+          onLight={onLight}
+          onClose={() => setQuickPanel(false)}
+        />
+      )}
+      {readerMenuOpen && menu && (
         <ReaderMenu
           active={menu}
           fontSize={fontSize}
           clips={clipCount}
-          onClose={() => setMenu(null)}
+          onClose={() => {
+            setMenu(null);
+            setReaderMenuOpen(false);
+          }}
           onSelect={setMenu}
           onFontSize={setFontSize}
           onScreenshot={() => {
@@ -870,7 +910,7 @@ function Reader({ onQuick }: { onQuick: () => void }) {
           }}
         />
       )}
-      <nav className="reader-bottom-menu">
+      {readerMenuOpen && <nav className="reader-bottom-menu">
         <button onClick={() => setMenu("contents")}>
           ☰<span>Contents</span>
         </button>
@@ -883,7 +923,7 @@ function Reader({ onQuick }: { onQuick: () => void }) {
         <button onClick={() => setMenu("more")}>
           •••<span>More</span>
         </button>
-      </nav>
+      </nav>}
     </main>
   );
 }
@@ -903,6 +943,58 @@ function ReaderSheet({
         <button onClick={onClose}>×</button>
       </header>
       <div>{children}</div>
+    </section>
+  );
+}
+function ReaderQuickPanel({
+  light,
+  onLight,
+  onClose,
+}: {
+  light: number;
+  onLight: (value: number) => void;
+  onClose: () => void;
+}) {
+  const [warmth, setWarmth] = useState(50);
+  const [wifi, setWifi] = useState(true);
+  const [bluetooth, setBluetooth] = useState(false);
+  const [refreshed, setRefreshed] = useState(false);
+  const step = (setter: (value: number) => void, value: number, amount: number) =>
+    setter(Math.max(0, Math.min(100, value + amount)));
+  return (
+    <section
+      className="reader-quick-panel"
+      onTouchStart={(event) => event.stopPropagation()}
+      onTouchEnd={(event) => event.stopPropagation()}
+    >
+      <header>
+        <strong>Quick controls</strong>
+        <button onClick={onClose} aria-label="Close quick controls">×</button>
+      </header>
+      <div className="reader-quick-levels">
+        <label>
+          Brightness <output>{light}%</output>
+          <span>
+            <button onClick={() => step(onLight, light, -10)}>−</button>
+            <input type="range" min="0" max="100" value={light} onChange={(event) => onLight(Number(event.target.value))} />
+            <button onClick={() => step(onLight, light, 10)}>+</button>
+          </span>
+        </label>
+        <label>
+          Warmth <output>{warmth < 45 ? "Cool" : warmth > 55 ? "Warm" : "Neutral"}</output>
+          <span>
+            <button onClick={() => step(setWarmth, warmth, -10)}>−</button>
+            <input type="range" min="0" max="100" value={warmth} onChange={(event) => setWarmth(Number(event.target.value))} />
+            <button onClick={() => step(setWarmth, warmth, 10)}>+</button>
+          </span>
+        </label>
+      </div>
+      <div className="reader-quick-actions">
+        <button className={wifi ? "active" : ""} onClick={() => setWifi((value) => !value)}><WifiHigh size={19} />Wi-Fi</button>
+        <button className={bluetooth ? "active" : ""} onClick={() => setBluetooth((value) => !value)}><Bluetooth size={19} />Bluetooth</button>
+        <button className={refreshed ? "active" : ""} onClick={() => setRefreshed(true)}><ArrowsClockwise size={19} />Refresh</button>
+        <button onClick={() => step(onLight, light, 10)}><SunDim size={19} />Light</button>
+      </div>
     </section>
   );
 }
