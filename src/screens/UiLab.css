@@ -1957,6 +1957,25 @@ fieldset:disabled {
   color: #f5f4ee;
   font-size: 19px;
 }
+.keyboard-bottom > button:first-child,
+.keyboard-bottom .key-apply {
+  flex: 1.45;
+}
+.keyboard-bottom .key-cursor {
+  flex: 0.78;
+}
+.keyboard-bottom .key-space {
+  flex: 4.55;
+}
+.shift-row .key-backspace {
+  flex: 1.7;
+  border: 1px solid #181817;
+  border-radius: 8px;
+  font-size: 18px;
+}
+.shift-row .key-symbol-page {
+  font-size: 12px;
+}
 .eink-reader {
   position: relative;
   overflow: hidden;

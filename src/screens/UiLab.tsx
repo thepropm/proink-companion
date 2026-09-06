@@ -3549,6 +3549,7 @@ function EinkKeyboard({
   const [cursor, setCursor] = useState(request.value.length);
   const [shift, setShift] = useState<"off" | "once" | "lock">("off");
   const [symbols, setSymbols] = useState(request.kind === "time");
+  const [symbolPage, setSymbolPage] = useState<"common" | "more">("common");
   const letters = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
   const update = (next: string, nextCursor = cursor) => {
     setValue(next);
@@ -3607,18 +3608,25 @@ function EinkKeyboard({
             ? "next letter uppercase"
             : request.title}
       </p>
-      {row(symbols ? "[]{}=<>|/" : "@#$%&*-_!", "symbol-strip")}
-      {row(symbols ? "~`^,.;@#&" : "1234567890", "number-row")}
-      {row(symbols ? "!?:;\"'+-()" : letters[0])}
-      {row(symbols ? "_\\|/<>[]{}" : letters[1])}
+      {row(
+        symbols
+          ? symbolPage === "common"
+            ? "[]{}=<>|/"
+            : "~`^%$#@&*"
+          : "@#$%&*-_!",
+        "symbol-strip",
+      )}
+      {row("1234567890", "number-row")}
+      {row(symbols ? (symbolPage === "common" ? "!?:;\"'+-()" : "_\\|/.,;:?!") : letters[0])}
+      {row(symbols ? (symbolPage === "common" ? "_\\|/<>[]{}" : "=+*#&%@~`") : letters[1])}
       <div className="keyboard-row shift-row">
         <button
-          className={shift === "off" ? "key-shift" : "key-shift active"}
-          onClick={toggleShift}
+          className={symbols ? "key-shift key-symbol-page" : shift === "off" ? "key-shift" : "key-shift active"}
+          onClick={() => symbols ? setSymbolPage((current) => current === "common" ? "more" : "common") : toggleShift()}
         >
-          {shift === "lock" ? "CAPS" : "Shift"}
+          {symbols ? "#+=" : "⇧"}
         </button>
-        {(symbols ? "@#$%&*-_!" : letters[2]).split("").map((key, index) => (
+        {(symbols ? (symbolPage === "common" ? "@#$%&*-_" : "()[]{}<>|") : letters[2]).split("").map((key, index) => (
           <button
             key={`${key}-${index}`}
             onClick={() => insert(shift === "off" || symbols ? key : key.toUpperCase())}
@@ -3626,6 +3634,7 @@ function EinkKeyboard({
             {shift === "off" || symbols ? key : key.toUpperCase()}
           </button>
         ))}
+        <button className="key-backspace" onClick={remove} aria-label="Backspace">⌫</button>
       </div>
       <div className="keyboard-row keyboard-bottom">
         <button onClick={() => setSymbols((current) => !current)}>
@@ -3647,9 +3656,6 @@ function EinkKeyboard({
           }
         >
           ›
-        </button>
-        <button className="key-backspace" onClick={remove}>
-          ⌫
         </button>
         <button className="key-apply" onClick={apply}>
           ✓
