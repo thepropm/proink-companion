@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowsClockwise,
+  ArrowFatUp,
+  Backspace,
   BatteryHigh,
   Bluetooth,
   BookOpen,
@@ -65,6 +67,8 @@ type KeyboardRequest = {
   value: string;
   kind: "text" | "time";
   onChange?: (value: string) => void;
+  onCursorChange?: (cursor: number) => void;
+  onDismiss?: () => void;
   onSubmit: (value: string) => void;
   submitLabel?: string;
 };
@@ -2598,14 +2602,24 @@ function DeviceNameEditor({
   onBack: () => void;
   onKeyboard: (request: KeyboardRequest) => void;
 }) {
+  const [editing, setEditing] = useState(false);
+  const [cursor, setCursor] = useState(value.length);
   const edit = () =>
     onKeyboard({
       title: "Device name",
       value,
       kind: "text",
       submitLabel: "Save",
-      onChange,
-      onSubmit: onChange,
+      onChange: (next) => {
+        onChange(next);
+        setEditing(true);
+      },
+      onCursorChange: setCursor,
+      onDismiss: () => setEditing(false),
+      onSubmit: (next) => {
+        onChange(next);
+        setEditing(false);
+      },
     });
   return (
     <main className="eink-main eink-settings device-name-editor">
@@ -2618,7 +2632,17 @@ function DeviceNameEditor({
       </p>
       <label>Device name</label>
       <button className="device-name-field" onClick={edit}>
-        <span>{value || "Proink X4 Pro"}</span>
+        <span>
+          {editing ? (
+            <>
+              {value.slice(0, cursor)}
+              <i className="text-caret" aria-hidden="true" />
+              {value.slice(cursor)}
+            </>
+          ) : (
+            value || "Proink X4 Pro"
+          )}
+        </span>
         <b>›</b>
       </button>
       <p className="system-message">
@@ -3563,6 +3587,7 @@ function EinkKeyboard({
     setValue(next);
     setCursor(nextCursor);
     request.onChange?.(next);
+    request.onCursorChange?.(nextCursor);
   };
   const insert = (key: string) => {
     const next = `${value.slice(0, cursor)}${key}${value.slice(cursor)}`;
@@ -3575,6 +3600,10 @@ function EinkKeyboard({
   };
   const apply = () => {
     request.onSubmit(value.trim());
+    onClose();
+  };
+  const dismiss = () => {
+    request.onDismiss?.();
     onClose();
   };
   const toggleShift = () =>
@@ -3600,7 +3629,7 @@ function EinkKeyboard({
     <section className="eink-keyboard" aria-label={`${request.title} keyboard`}>
       <div className="keyboard-heading">
         <strong>{request.title}</strong>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={dismiss}>Cancel</button>
       </div>
       <p className="keyboard-tip">
         <b>
@@ -3629,10 +3658,10 @@ function EinkKeyboard({
       {row(symbols ? (symbolPage === "common" ? "_\\|/<>[]{}" : "=+*#&%@~`") : letters[1])}
       <div className="keyboard-row shift-row">
         <button
-          className={symbols ? "key-shift key-symbol-page" : shift === "off" ? "key-shift" : "key-shift active"}
+          className={`keyboard-action-key key-shift${symbols ? " key-symbol-page" : ""}${shift === "off" ? "" : " active"}`}
           onClick={() => symbols ? setSymbolPage((current) => current === "common" ? "more" : "common") : toggleShift()}
         >
-          {symbols ? "#+=" : "⇧"}
+          {symbols ? "#+=" : <ArrowFatUp weight="bold" aria-hidden="true" />}
         </button>
         {(symbols ? (symbolPage === "common" ? "@#$%&*-_" : "()[]{}<>|") : letters[2]).split("").map((key, index) => (
           <button
@@ -3642,30 +3671,38 @@ function EinkKeyboard({
             {shift === "off" || symbols ? key : key.toUpperCase()}
           </button>
         ))}
-        <button className="key-backspace" onClick={remove} aria-label="Backspace">×</button>
+        <button className="keyboard-action-key key-backspace" onClick={remove} aria-label="Backspace">
+          <Backspace weight="bold" aria-hidden="true" />
+        </button>
       </div>
       <div className="keyboard-row keyboard-bottom">
-        <button onClick={() => setSymbols((current) => !current)}>
+        <button className="keyboard-action-key key-mode" onClick={() => setSymbols((current) => !current)}>
           {symbols ? "abc" : "?123"}
         </button>
         <button
-          className="key-cursor"
-          onClick={() => setCursor((current) => Math.max(0, current - 1))}
+          className="keyboard-action-key key-cursor"
+          onClick={() => setCursor((current) => {
+            const next = Math.max(0, current - 1);
+            request.onCursorChange?.(next);
+            return next;
+          })}
         >
           ‹
         </button>
-        <button className="key-space" onClick={() => insert(" ")}>
+        <button className="keyboard-action-key key-space" onClick={() => insert(" ")}>
           −
         </button>
         <button
-          className="key-cursor"
-          onClick={() =>
-            setCursor((current) => Math.min(value.length, current + 1))
-          }
+          className="keyboard-action-key key-cursor"
+          onClick={() => setCursor((current) => {
+            const next = Math.min(value.length, current + 1);
+            request.onCursorChange?.(next);
+            return next;
+          })}
         >
           ›
         </button>
-        <button className="key-apply" onClick={apply}>
+        <button className="keyboard-action-key key-apply" onClick={apply}>
           ✓
         </button>
       </div>

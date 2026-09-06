@@ -2018,6 +2018,56 @@ fieldset:disabled {
 .keyboard-bottom .key-space {
   border: 1.5px solid #181817;
 }
+.eink-keyboard .keyboard-action-key {
+  box-sizing: border-box;
+  height: 44px !important;
+  min-height: 44px;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1.5px solid #181817 !important;
+  border-radius: 0 !important;
+  background: transparent;
+  color: #181817;
+  line-height: 1;
+}
+.eink-keyboard .keyboard-action-key svg {
+  width: 25px;
+  height: 25px;
+}
+.eink-keyboard .shift-row .keyboard-action-key {
+  flex: 0 0 48px;
+}
+.eink-keyboard .shift-row .key-symbol-page {
+  font: 13px/1 ui-monospace, monospace;
+}
+.eink-keyboard .keyboard-bottom .key-mode,
+.eink-keyboard .keyboard-bottom .key-apply {
+  flex: 1.45;
+}
+.eink-keyboard .keyboard-bottom .key-cursor {
+  flex: 0.78;
+  font: 25px/1 Georgia, serif;
+}
+.eink-keyboard .keyboard-bottom .key-space {
+  flex: 4.55;
+  font: 18px/1 ui-monospace, monospace;
+}
+.eink-keyboard .keyboard-action-key.active,
+.eink-keyboard .keyboard-action-key.key-apply {
+  outline: 0;
+  background: #181817;
+  color: #f5f4ee;
+}
+.text-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin: 0 1px -0.2em;
+  background: currentColor;
+  vertical-align: baseline;
+}
 .eink-reader {
   position: relative;
   overflow: hidden;
