@@ -360,7 +360,7 @@ export function UiLab() {
             <div
               className={`eink-screen ${darkMode ? "eink-dark" : ""} ui-scale-${uiScale}`}
             >
-              <StatusBar settings={statusSettings} />
+              {screen !== "reader" && <StatusBar settings={statusSettings} />}
               {screen === "home" && (
                 <Home
                   focusedApp={focusedApp}
@@ -748,7 +748,7 @@ function Reader({
   light: number;
   onLight: (value: number) => void;
 }) {
-  const [page, setPage] = useState(86);
+  const [page, setPage] = useState(12);
   const [fontSize, setFontSize] = useState(19);
   const [menu, setMenu] = useState<
     "contents" | "progress" | "layout" | "more" | null
@@ -759,10 +759,13 @@ function Reader({
   const [screenshot, setScreenshot] = useState(false);
   const [readerMenuOpen, setReaderMenuOpen] = useState(false);
   const [quickPanel, setQuickPanel] = useState(false);
+  const [readerStatusVisible, setReaderStatusVisible] = useState(true);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const swiped = useRef(false);
+  const chapterPages = 77;
+  const bookProgress = 1.56;
   const advance = (amount: number) =>
-    setPage((current) => Math.max(1, Math.min(204, current + amount)));
+    setPage((current) => Math.max(1, Math.min(chapterPages, current + amount)));
   const selectText = () => {
     setSelection(true);
     setLookup(null);
@@ -797,13 +800,6 @@ function Reader({
       }}
       onTouchEnd={gestureEnd}
     >
-      <div className="reader-top">
-        <button onClick={() => advance(-1)}>‹</button>
-        <span>The Art of Reading</span>
-        <button onClick={() => setQuickPanel(true)}>
-          <SunDim size={18} />
-        </button>
-      </div>
       <div
         className="reader-page"
         style={{ fontSize }}
@@ -835,10 +831,25 @@ function Reader({
           Select text
         </button>
       </div>
-      <footer>
-        <span>42%</span>
-        <span>Page {page} of 204</span>
-      </footer>
+      <button
+        className={`reader-status-footer${readerStatusVisible ? "" : " is-hidden"}`}
+        aria-label={readerStatusVisible ? "Hide reading indicators" : "Show reading indicators"}
+        onClick={(event) => {
+          event.stopPropagation();
+          setReaderStatusVisible((visible) => !visible);
+        }}
+      >
+        <span className="reader-status-left">
+          <span className="reader-battery" aria-label="82 percent battery">
+            <span>82%</span>
+          </span>
+          <span>3h 17m</span>
+        </span>
+        <span className="reader-status-right">
+          <span>{page}/{chapterPages}</span>
+          <span>{Math.round(bookProgress)}%</span>
+        </span>
+      </button>
       {selection && (
         <div className="reader-selection">
           <i className="selection-handle left" />
