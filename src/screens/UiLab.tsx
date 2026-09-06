@@ -26,7 +26,7 @@ import {
 } from "@phosphor-icons/react";
 import "./UiLab.css";
 
-type Screen = "home" | "library" | "files" | "reader" | "quick" | "settings";
+type Screen = "home" | "library" | "files" | "reader" | "quick" | "settings" | "stats";
 type SettingsSection = "display" | "reading" | "controls" | "system" | null;
 type SettingsPage =
   | SettingsSection
@@ -163,6 +163,7 @@ export function UiLab() {
   });
   const [settingsPage, setSettingsPage] = useState<SettingsPage>(null);
   const [keyboard, setKeyboard] = useState<KeyboardRequest | null>(null);
+  const [statsBook, setStatsBook] = useState(false);
   const [deviceScale, setDeviceScale] = useState(1);
   const workbenchRef = useRef<HTMLDivElement>(null);
   const goHome = () => {
@@ -261,7 +262,8 @@ export function UiLab() {
         : current === "reader" ||
             current === "library" ||
             current === "files" ||
-            current === "settings"
+            current === "settings" ||
+            current === "stats"
           ? "home"
           : "home",
     );
@@ -274,6 +276,8 @@ export function UiLab() {
         ? "library"
         : label === "Files"
           ? "files"
+        : label === "Stats"
+          ? "stats"
           : label === "Settings"
             ? "settings"
             : "home",
@@ -388,7 +392,14 @@ export function UiLab() {
                 />
               )}
               {screen === "reader" && (
-                <Reader light={light} onLight={setLight} />
+                <Reader
+                  light={light}
+                  onLight={setLight}
+                  onBookStats={() => {
+                    setStatsBook(true);
+                    setScreen("stats");
+                  }}
+                />
               )}
               {screen === "quick" && (
                 <QuickSettings
@@ -409,6 +420,16 @@ export function UiLab() {
                   onUiScale={setUiScale}
                   statusSettings={statusSettings}
                   onStatusSettings={setStatusSettings}
+                />
+              )}
+              {screen === "stats" && (
+                <ReadingStats
+                  initialBook={statsBook}
+                  onBack={() => {
+                    setStatsBook(false);
+                    setScreen("home");
+                  }}
+                  onRead={() => setScreen("reader")}
                 />
               )}
               {keyboard && (
@@ -470,8 +491,8 @@ export function UiLab() {
             </li>
           </ul>
           <p className="ui-lab-note">
-            <strong>Reader prototype:</strong> tap the top-right light icon for
-            the quick panel; tap the page or use the bottom menu to test reading
+            <strong>Reader prototype:</strong> swipe down for quick controls,
+            swipe up for the reader menu, or tap the page to test reading
             actions.
           </p>
           </div>
@@ -552,22 +573,22 @@ function Home({
             </span>
             <span className="book-stats">
               <span>
-                <b>6</b>Sessions
+                <b>2h 18m</b>Reading time
               </span>
               <span>
-                <b>2h 18m</b>Read time
+                <b>6h 50m</b>Time left
               </span>
               <span>
                 <b>5.4</b>Pages/min
               </span>
               <span>
-                <b>23m</b>Avg session
+                <b>21m</b>Daily avg
               </span>
               <span>
                 <b>Sep 02</b>Started
               </span>
               <span>
-                <b>42%</b>Progress
+                <b>Oct 12</b>Est. finish
               </span>
             </span>
           </span>
@@ -577,13 +598,13 @@ function Home({
             <b>4 days</b>Streak
           </span>
           <span>
-            <b>12</b>Books read
+            <b>6</b>Sessions
           </span>
           <span>
-            <b>Evening</b>Best time
+            <b>42%</b>Progress
           </span>
           <span>
-            <b>Sunday</b>Most read
+            <b>Time of Day</b>View stats
           </span>
         </span>
         <em>Continue reading</em>
@@ -744,9 +765,11 @@ function Files({
 function Reader({
   light,
   onLight,
+  onBookStats,
 }: {
   light: number;
   onLight: (value: number) => void;
+  onBookStats: () => void;
 }) {
   const [page, setPage] = useState(12);
   const [fontSize, setFontSize] = useState(19);
@@ -760,6 +783,7 @@ function Reader({
   const [readerMenuOpen, setReaderMenuOpen] = useState(false);
   const [quickPanel, setQuickPanel] = useState(false);
   const [readerStatusVisible, setReaderStatusVisible] = useState(true);
+  const [chapterPicker, setChapterPicker] = useState(false);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const swiped = useRef(false);
   const chapterPages = 77;
@@ -873,11 +897,7 @@ function Reader({
         </div>
       )}
       {lookup === "dictionary" && (
-        <ReaderSheet title="Dictionary" onClose={() => setLookup(null)}>
-          <strong>quiet</strong>
-          <p>Free from disturbance; still and calm.</p>
-          <small>English - English dictionary</small>
-        </ReaderSheet>
+        <ReaderDictionary onClose={() => setLookup(null)} />
       )}
       {lookup === "clip" && (
         <ReaderSheet title="Clipping saved" onClose={() => setLookup(null)}>
@@ -919,6 +939,17 @@ function Reader({
             setScreenshot(true);
             setMenu(null);
           }}
+          onBookStats={onBookStats}
+          onChapters={() => setChapterPicker(true)}
+        />
+      )}
+      {chapterPicker && (
+        <ReaderChapterPicker
+          onClose={() => setChapterPicker(false)}
+          onSelect={(chapterPage) => {
+            setPage(chapterPage);
+            setChapterPicker(false);
+          }}
         />
       )}
       {readerMenuOpen && <nav className="reader-bottom-menu">
@@ -957,6 +988,58 @@ function ReaderSheet({
     </section>
   );
 }
+function ReaderDictionary({ onClose }: { onClose: () => void }) {
+  return (
+    <section className="reader-dictionary" onClick={(event) => event.stopPropagation()}>
+      <header>
+        <span>
+          <strong>quiet</strong>
+          <small>adjective</small>
+        </span>
+        <button onClick={onClose} aria-label="Close dictionary">×</button>
+      </header>
+      <div>
+        <p><b>1.</b> Free from noise, disturbance, or interruption.</p>
+        <p><b>2.</b> Making little or no sound; calm and still.</p>
+        <p className="dictionary-example">“The reader has room to notice what matters.”</p>
+        <small>English - English dictionary</small>
+      </div>
+    </section>
+  );
+}
+function ReaderChapterPicker({
+  onClose,
+  onSelect,
+}: {
+  onClose: () => void;
+  onSelect: (page: number) => void;
+}) {
+  const chapters = [
+    ["Introduction", 1], ["Chapter One", 6], ["Chapter Two", 9], ["Chapter Three", 12],
+    ["Chapter Four", 19], ["Chapter Five", 27], ["Chapter Six", 34], ["Chapter Seven", 42],
+    ["Chapter Eight", 49], ["Chapter Nine", 57], ["Chapter Ten", 64], ["Notes", 72],
+  ] as const;
+  return (
+    <section className="reader-chapter-picker" onClick={(event) => event.stopPropagation()}>
+      <header>
+        <button onClick={onClose}>‹</button>
+        <strong>Chapters</strong>
+        <span>12</span>
+      </header>
+      <div>
+        {chapters.map(([title, chapterPage]) => (
+          <button
+            className={chapterPage === 12 ? "selected" : ""}
+            key={title}
+            onClick={() => onSelect(chapterPage)}
+          >
+            <span>{title}</span><small>Page {chapterPage}</small>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
 function ReaderQuickPanel({
   light,
   onLight,
@@ -970,6 +1053,7 @@ function ReaderQuickPanel({
   const [wifi, setWifi] = useState(true);
   const [bluetooth, setBluetooth] = useState(false);
   const [refreshed, setRefreshed] = useState(false);
+  const [orientation, setOrientation] = useState<"Portrait" | "Landscape">("Portrait");
   const step = (setter: (value: number) => void, value: number, amount: number) =>
     setter(Math.max(0, Math.min(100, value + amount)));
   return (
@@ -1005,6 +1089,7 @@ function ReaderQuickPanel({
         <button className={bluetooth ? "active" : ""} onClick={() => setBluetooth((value) => !value)}><Bluetooth size={19} />Bluetooth</button>
         <button className={refreshed ? "active" : ""} onClick={() => setRefreshed(true)}><ArrowsClockwise size={19} />Refresh</button>
         <button onClick={() => step(onLight, light, 10)}><SunDim size={19} />Light</button>
+        <button onClick={() => setOrientation((value) => value === "Portrait" ? "Landscape" : "Portrait")}><span className="orientation-icon">↻</span>{orientation}</button>
       </div>
     </section>
   );
@@ -1017,6 +1102,8 @@ function ReaderMenu({
   onSelect,
   onFontSize,
   onScreenshot,
+  onBookStats,
+  onChapters,
 }: {
   active: "contents" | "progress" | "layout" | "more";
   fontSize: number;
@@ -1025,6 +1112,8 @@ function ReaderMenu({
   onSelect: (value: "contents" | "progress" | "layout" | "more") => void;
   onFontSize: (value: number) => void;
   onScreenshot: () => void;
+  onBookStats: () => void;
+  onChapters: () => void;
 }) {
   const [tab, setTab] = useState<"Contents" | "Bookmarks" | "Clippings">(
     "Contents",
@@ -1049,15 +1138,10 @@ function ReaderMenu({
           </div>
           {tab === "Contents" && (
             <div className="reader-menu-list">
-              <button>
-                Chapter One <small>Page 1</small>
+              <button onClick={onChapters}>
+                Select chapter <small>12 chapters</small>
               </button>
-              <button>
-                Chapter Two <small>Page 43</small>
-              </button>
-              <button className="selected">
-                Chapter Three <small>Page 81</small>
-              </button>
+              <p className="reader-menu-note">Chapter Three · page 12 of 77</p>
             </div>
           )}
           {tab === "Bookmarks" && (
@@ -1095,6 +1179,7 @@ function ReaderMenu({
             <b>2h 18m</b>
           </p>
           <button>Jump to page...</button>
+          <button onClick={onBookStats}>Book statistics</button>
         </div>
       )}
       {active === "layout" && (
@@ -1127,6 +1212,74 @@ function ReaderMenu({
       )}
     </section>
   );
+}
+function ReadingStats({
+  initialBook,
+  onBack,
+  onRead,
+}: {
+  initialBook: boolean;
+  onBack: () => void;
+  onRead: () => void;
+}) {
+  const [tab, setTab] = useState<"overall" | "books">(initialBook ? "books" : "overall");
+  const [selectedBook, setSelectedBook] = useState(initialBook ? "The Art of Reading" : "");
+  const isDetail = Boolean(selectedBook);
+  const metrics: readonly (readonly [string, string])[] = isDetail
+    ? [["6", "Sessions"], ["2h 18m", "Reading time"], ["42%", "Progress"], ["23m", "Avg session"], ["6h 50m", "Time left"], ["5.4", "Pages/min"], ["Sep 02", "Started"], ["Oct 12", "Est. finish"]]
+    : [["42", "Sessions"], ["18h 24m", "Reading time"], ["5.1", "Pages/min"], ["21m", "Avg session"], ["4 days", "Reading streak"], ["12", "Books read"]];
+  const back = () => {
+    if (isDetail) setSelectedBook("");
+    else onBack();
+  };
+  return (
+    <main className="eink-main eink-stats-screen">
+      <header className="screen-title">
+        <button onClick={back}>‹</button>
+        <strong>{isDetail ? "Reading stats" : "Stats"}</strong>
+        <span>{isDetail ? "Sep 08" : "This device"}</span>
+      </header>
+      {!isDetail && (
+        <div className="stats-tabs">
+          <button className={tab === "overall" ? "selected" : ""} onClick={() => setTab("overall")}>Overall</button>
+          <button className={tab === "books" ? "selected" : ""} onClick={() => setTab("books")}>By Book</button>
+        </div>
+      )}
+      {isDetail ? (
+        <>
+          <p className="stats-book-name">{selectedBook}</p>
+          <StatsMetrics items={metrics} />
+          <StatsBars />
+          <button className="stats-read-button" onClick={onRead}>Continue reading</button>
+        </>
+      ) : tab === "overall" ? (
+        <>
+          <p className="stats-section-name">All books</p>
+          <StatsMetrics items={metrics} />
+          <StatsBars />
+        </>
+      ) : (
+        <div className="stats-book-list">
+          {BOOKS.map(([title, author, progress]) => (
+            <button key={title} onClick={() => setSelectedBook(title)}>
+              <BookOpen size={17} /><span><strong>{title}</strong><small>{author}</small></span><b>{progress}</b>
+            </button>
+          ))}
+        </div>
+      )}
+    </main>
+  );
+}
+function StatsMetrics({ items }: { items: readonly (readonly [string, string])[] }) {
+  return <section className="stats-metrics">{items.map(([value, label]) => <span key={label}><b>{value}</b><small>{label}</small></span>)}</section>;
+}
+function StatsBars() {
+  const dayParts = [["Morning", 72], ["Afternoon", 24], ["Evening", 51], ["Night", 88]] as const;
+  const weekdays = [["Mon", 38], ["Tue", 91], ["Wed", 0], ["Thu", 56], ["Fri", 49], ["Sat", 22], ["Sun", 0]] as const;
+  const bars = (title: string, items: readonly (readonly [string, number])[]) => (
+    <section className="stats-bars"><h2>{title}</h2>{items.map(([label, value]) => <p key={label}><span>{label}</span><i><b style={{ width: `${value}%` }} /></i></p>)}</section>
+  );
+  return <>{bars("Time of Day", dayParts)}{bars("Day of Week", weekdays)}</>;
 }
 function QuickSettings({
   light,
