@@ -307,7 +307,13 @@ export function UiLab() {
       // The 558px footprint includes the shell and the side hardware keys.
       const availableWidth =
         workbenchRef.current?.clientWidth ?? window.innerWidth;
-      setDeviceScale(Math.min(1, Math.max(0.1, availableWidth / 558)));
+      const availableHeight = window.innerHeight - 48;
+      setDeviceScale(
+        Math.min(
+          1,
+          Math.max(0.58, Math.min(availableWidth / 558, availableHeight / 926)),
+        ),
+      );
     };
     updateDeviceScale();
     const observer = new ResizeObserver(updateDeviceScale);
@@ -316,39 +322,8 @@ export function UiLab() {
   }, []);
   return (
     <section className="ui-lab">
-      <div className="ui-lab-intro">
-        <div>
-          <p className="eyebrow">Offline design prototype</p>
-          <h1>Proink UI Lab</h1>
-          <p>
-            Test the real X4 Pro portrait canvas before we change firmware.
-            Nothing here connects to a device or needs the internet.
-          </p>
-        </div>
-        <div className="ui-lab-controls">
-          <div className="segmented" role="group" aria-label="Refresh preview">
-            <button
-              className={speed === "fast" ? "selected" : ""}
-              onClick={() => setSpeed("fast")}
-            >
-              Fast refresh
-            </button>
-            <button
-              className={speed === "clean" ? "selected" : ""}
-              onClick={() => setSpeed("clean")}
-            >
-              Full clean
-            </button>
-          </div>
-          <p>
-            <strong>{speed === "fast" ? "Fast" : "Full"}</strong> preview:{" "}
-            {speed === "fast"
-              ? "no animation, partial e-ink update"
-              : "white-flash cleaning pass"}
-          </p>
-        </div>
-      </div>
-      <div className="ui-lab-workbench" ref={workbenchRef}>
+      <div className="ui-lab-workbench">
+        <div className="eink-simulator-column" ref={workbenchRef}>
         <div
           className="eink-device-frame"
           style={{
@@ -446,7 +421,39 @@ export function UiLab() {
             />
           </div>
         </div>
-        <aside className="ui-lab-notes">
+        </div>
+        <aside className="ui-lab-sidebar">
+          <div className="ui-lab-intro">
+            <p className="eyebrow">Offline design prototype</p>
+            <h1>Proink UI Lab</h1>
+            <p>
+              Test the real X4 Pro portrait canvas before we change firmware.
+              Nothing here connects to a device or needs the internet.
+            </p>
+          </div>
+          <div className="ui-lab-controls">
+            <div className="segmented" role="group" aria-label="Refresh preview">
+              <button
+                className={speed === "fast" ? "selected" : ""}
+                onClick={() => setSpeed("fast")}
+              >
+                Fast refresh
+              </button>
+              <button
+                className={speed === "clean" ? "selected" : ""}
+                onClick={() => setSpeed("clean")}
+              >
+                Full clean
+              </button>
+            </div>
+            <p>
+              <strong>{speed === "fast" ? "Fast" : "Full"}</strong> preview:{" "}
+              {speed === "fast"
+                ? "no animation, partial e-ink update"
+                : "white-flash cleaning pass"}
+            </p>
+          </div>
+          <div className="ui-lab-notes">
           <p className="eyebrow">Hardware rules</p>
           <h2>Design within the panel</h2>
           <ul>
@@ -463,6 +470,7 @@ export function UiLab() {
             the quick panel; tap the page or use the bottom menu to test reading
             actions.
           </p>
+          </div>
         </aside>
       </div>
     </section>

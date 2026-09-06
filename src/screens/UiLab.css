@@ -1,11 +1,8 @@
 .ui-lab {
-  max-width: 1120px;
+  max-width: 1280px;
 }
 .ui-lab-intro {
-  display: flex;
-  justify-content: space-between;
-  gap: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 .ui-lab h1,
 .ui-lab h2,
@@ -17,8 +14,8 @@
   letter-spacing: -1.3px;
   margin-bottom: 8px;
 }
-.ui-lab-intro > div:first-child > p:last-child {
-  max-width: 580px;
+.ui-lab-intro > p:last-child {
+  max-width: 410px;
   color: var(--color-ink-muted);
   line-height: 1.55;
 }
@@ -30,7 +27,7 @@
   text-transform: uppercase;
 }
 .ui-lab-controls {
-  width: 275px;
+  width: 100%;
   font-size: 13px;
   color: var(--color-ink-muted);
 }
@@ -57,9 +54,18 @@
 }
 .ui-lab-workbench {
   display: grid;
-  grid-template-columns: 558px minmax(250px, 1fr);
+  grid-template-columns: minmax(360px, 1fr) minmax(310px, 390px);
   align-items: start;
-  gap: 56px;
+  gap: clamp(32px, 5vw, 72px);
+}
+.eink-simulator-column {
+  display: flex;
+  min-height: calc(100vh - 48px);
+  justify-content: center;
+  align-items: flex-start;
+}
+.ui-lab-sidebar {
+  padding-top: 4px;
 }
 /* The X4 Pro canvas is deliberately fixed, not ratio-scaled: every simulator
    pixel maps to one logical firmware pixel (480 x 800 portrait). */
@@ -1647,6 +1653,9 @@ fieldset:disabled {
     overflow-x: hidden;
     padding-bottom: 20px;
     gap: 24px;
+  }
+  .eink-simulator-column {
+    min-height: 0;
   }
   .eink-device-frame {
     margin-inline: auto;
