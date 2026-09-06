@@ -604,7 +604,7 @@ function Home({
             <b>42%</b>Progress
           </span>
           <span>
-            <b>Time of Day</b>View stats
+            <b>Night</b>Peak reading time
           </span>
         </span>
         <em>Continue reading</em>
@@ -1248,15 +1248,24 @@ function ReadingStats({
       {isDetail ? (
         <>
           <p className="stats-book-name">{selectedBook}</p>
-          <StatsMetrics items={metrics} />
-          <StatsBars />
+          <StatsPulse
+            eyebrow="BOOK TRAJECTORY"
+            value="42%"
+            label="of this book complete"
+            metrics={metrics}
+          />
+          <ReadingRhythm />
           <button className="stats-read-button" onClick={onRead}>Continue reading</button>
         </>
       ) : tab === "overall" ? (
         <>
-          <p className="stats-section-name">All books</p>
-          <StatsMetrics items={metrics} />
-          <StatsBars />
+          <StatsPulse
+            eyebrow="READING PULSE"
+            value="18h 24m"
+            label="total time with books"
+            metrics={metrics}
+          />
+          <ReadingRhythm />
         </>
       ) : (
         <div className="stats-book-list">
@@ -1270,16 +1279,38 @@ function ReadingStats({
     </main>
   );
 }
-function StatsMetrics({ items }: { items: readonly (readonly [string, string])[] }) {
-  return <section className="stats-metrics">{items.map(([value, label]) => <span key={label}><b>{value}</b><small>{label}</small></span>)}</section>;
-}
-function StatsBars() {
-  const dayParts = [["Morning", 72], ["Afternoon", 24], ["Evening", 51], ["Night", 88]] as const;
-  const weekdays = [["Mon", 38], ["Tue", 91], ["Wed", 0], ["Thu", 56], ["Fri", 49], ["Sat", 22], ["Sun", 0]] as const;
-  const bars = (title: string, items: readonly (readonly [string, number])[]) => (
-    <section className="stats-bars"><h2>{title}</h2>{items.map(([label, value]) => <p key={label}><span>{label}</span><i><b style={{ width: `${value}%` }} /></i></p>)}</section>
+function StatsPulse({
+  eyebrow,
+  value,
+  label,
+  metrics,
+}: {
+  eyebrow: string;
+  value: string;
+  label: string;
+  metrics: readonly (readonly [string, string])[];
+}) {
+  return (
+    <section className="stats-pulse">
+      <div className="stats-pulse-main"><small>{eyebrow}</small><strong>{value}</strong><span>{label}</span></div>
+      <div className="stats-pulse-metrics">
+        {metrics.map(([metricValue, metricLabel]) => <span key={metricLabel}><b>{metricValue}</b><small>{metricLabel}</small></span>)}
+      </div>
+    </section>
   );
-  return <>{bars("Time of Day", dayParts)}{bars("Day of Week", weekdays)}</>;
+}
+function ReadingRhythm() {
+  const week = [["M", 42], ["T", 88], ["W", 0], ["T", 57], ["F", 48], ["S", 22], ["S", 0]] as const;
+  const periods = [["Morning", 46], ["Afternoon", 12], ["Evening", 62], ["Night", 92]] as const;
+  return (
+    <section className="reading-rhythm-card">
+      <div className="rhythm-heading"><span><small>READING RHYTHM</small><strong>Night</strong><em>Peak reading time</em></span><b>9–11 pm</b></div>
+      <div className="rhythm-periods">
+        {periods.map(([label, amount]) => <span key={label} className={label === "Night" ? "peak" : ""}><i style={{ height: `${amount}%` }} /><small>{label.slice(0, 1)}</small></span>)}
+      </div>
+      <div className="rhythm-week"><small>This week</small><div>{week.map(([day, amount], index) => <span key={`${day}-${index}`}><i style={{ height: `${amount}%` }} /><small>{day}</small></span>)}</div></div>
+    </section>
+  );
 }
 function QuickSettings({
   light,

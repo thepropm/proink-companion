@@ -2477,56 +2477,111 @@ fieldset:disabled {
 }
 .stats-tabs button + button { border-left: 1px solid #181817; }
 .stats-tabs button.selected { background: #181817; color: #f5f4ee; }
-.stats-section-name,
 .stats-book-name {
   margin: 8px 0 0;
   padding: 6px 8px;
-  border: 1px solid #181817;
+  border-bottom: 1px solid #181817;
   font: 10px ui-monospace, monospace;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.stats-metrics {
+.stats-pulse {
+  margin-top: 12px;
+  padding: 15px 0 0;
+  border-top: 2px solid #181817;
+}
+.stats-pulse-main {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  padding-bottom: 13px;
+}
+.stats-pulse-main small,
+.stats-pulse-metrics small,
+.rhythm-heading small,
+.rhythm-week > small,
+.rhythm-periods small,
+.rhythm-week small {
+  color: #686863;
+  font: 8px ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.stats-pulse-main strong {
+  font: 38px/0.95 Georgia, serif;
+  letter-spacing: -1.5px;
+}
+.stats-pulse-main span { font: 11px Georgia, serif; }
+.stats-pulse-metrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-top: 8px;
-  border: 1px solid #181817;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
 }
-.stats-metrics span {
-  min-height: 57px;
+.stats-pulse-metrics span {
+  min-height: 48px;
   display: grid;
-  place-content: center;
+  align-content: center;
   gap: 3px;
-  padding: 4px;
-  text-align: center;
+  padding: 4px 5px;
 }
-.stats-metrics span:nth-child(n + 4) { border-top: 1px solid #aaa; }
-.stats-metrics b { font: 16px Georgia, serif; }
-.stats-metrics small { font: 8px ui-monospace, monospace; }
-.stats-bars {
-  margin-top: 9px;
-  padding: 0 10px 8px;
-  border: 1px solid #181817;
+.stats-pulse-metrics span:nth-child(n + 4) { border-top: 1px solid #ddd; }
+.stats-pulse-metrics b { font: 13px Georgia, serif; }
+.reading-rhythm-card {
+  margin-top: 15px;
+  padding: 12px;
+  background: #e3e2dc;
 }
-.stats-bars h2 {
-  margin: 0 -10px 7px;
-  padding: 4px;
-  border-bottom: 1px solid #aaa;
-  text-align: center;
-  font: 12px ui-monospace, monospace;
+.rhythm-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #999;
 }
-.stats-bars p {
+.rhythm-heading span { display: grid; gap: 2px; }
+.rhythm-heading strong { font: 21px Georgia, serif; }
+.rhythm-heading em { font: 9px Georgia, serif; font-style: normal; }
+.rhythm-heading > b { font: 10px ui-monospace, monospace; }
+.rhythm-periods {
+  height: 76px;
   display: grid;
-  grid-template-columns: 70px 1fr;
-  align-items: center;
+  grid-template-columns: repeat(4, 1fr);
   gap: 7px;
-  margin: 6px 0;
-  font: 9px ui-monospace, monospace;
+  align-items: end;
+  padding: 10px 0 12px;
+  border-bottom: 1px solid #999;
 }
-.stats-bars i { height: 10px; background: #deded8; }
-.stats-bars b { display: block; height: 100%; background: #181817; }
+.rhythm-periods span,
+.rhythm-week span {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: end;
+  gap: 4px;
+  text-align: center;
+}
+.rhythm-periods i,
+.rhythm-week i {
+  width: 100%;
+  display: block;
+  align-self: end;
+  background: #8f8f89;
+}
+.rhythm-periods span.peak i { background: #181817; }
+.rhythm-periods span.peak small { color: #181817; font-weight: 700; }
+.rhythm-week { padding-top: 10px; }
+.rhythm-week > div {
+  height: 48px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  align-items: end;
+  margin-top: 7px;
+}
+.rhythm-week i { min-height: 2px; background: #181817; }
 .stats-book-list { display: grid; margin-top: 8px; border-top: 1px solid #999; }
 .stats-book-list button {
   min-height: 58px;
