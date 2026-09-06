@@ -29,7 +29,6 @@ const NAV_ITEMS = [
   { to: "/tools", label: "Tools", icon: Wrench },
   { to: "/flash", label: "Flash", icon: Usb },
   { to: "/ui-lab", label: "UI lab", icon: DeviceMobile },
-  { to: "/inkmod-preview", label: "inkMOD preview", icon: DeviceMobile },
   { to: "/about", label: "About", icon: Info },
 ];
 
